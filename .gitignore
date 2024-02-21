@@ -7,4 +7,4 @@ server/node_modules
 server/.env
 info
 dev_script
-.gitignore
+.vscode

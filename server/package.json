@@ -8,7 +8,7 @@
     "build": "npx tsc && webpack",
     "test": "echo \"Error: no test specified\" && exit 1",
     "clientDev": "npm start --prefix ../client/",
-    "dev": "concurrently \"npm run clientDev\" \"npx tsc --watch\" \"nodemon -q dist/index.js\""
+    "dev": "npm run build && concurrently \"npm run clientDev\" \"npx tsc --watch\" \"nodemon -q dist/index.js\""
   },
   "keywords": [],
   "author": "",
