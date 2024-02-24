@@ -1,46 +1,82 @@
 import { createTheme } from "@mui/material/styles";
 
-export const commonTheme = createTheme({
-    palette: {
-        text: {
-            primary: '#FCFCFC'
-        },
-        background: {
-            default: '#101418',
-        },
-        primary: {
-            // main: '#DDFFF7'
-            main: '#FCFCFC'
-        },
-        secondary: {
-            main: '#93E1D8'
-        },
-        info: {
-            main: '#FFA69E'
-        },
+const PALETTE = {
+    text: {
+        primary: '#FCFCFC'
     },
+    background: {
+        default: '#101418',
+    },
+    primary: {
+        main: '#0094FF',
+        light: '#5fb9fa',
+        dark: '#0248a3',
+        contrastText: '#0A141B',
+    },
+    secondary: {
+        main: '#00A789',
+        light: '#00D387',
+        dark: '#007040',
+        contrastText: '#0A141B',
+    },
+};
+
+export const commonTheme = createTheme({
+    palette: PALETTE,
     components: {
         MuiInputLabel: {
             styleOverrides: {
                 root: {
-                    color: '#343434',
-                }
+                    color: PALETTE.text.primary,
+                },
             }
         },
         MuiOutlinedInput: {
             styleOverrides: {
                 root: {
-                    "&:focus": {
-                        color: '#343434',
-                        borderColor: '#0094FF',
-                    },
-                    backgroundColor: '#030E16',
-                    textAlign: 'center',
+                    borderRadius: 11,
+                    color: PALETTE.text.primary,
                 },
                 notchedOutline: {
-                    borderColor: '#0094FF',
+                    variants: [
+                        {
+                            props: { color: 'primary' },
+                            style: {
+                                border: `1px solid ${PALETTE.primary.main}`,
+                                color: PALETTE.primary.main,
+                            },
+                        },
+                        {
+                            props: { color: 'secondary' },
+                            style: {
+                                border: `1px solid ${PALETTE.secondary.main}`,
+                                color: PALETTE.secondary.main,
+                            },
+                        },
+                    ],
                 }
-            }
-        }
+            },
+        },
+        MuiButton: {
+            styleOverrides: {
+                root: {
+                    borderRadius: 11,
+                }, 
+            },
+            variants: [
+                {
+                    props: { variant: 'contained', color: 'primary' },
+                    style: {
+                        border: `1px solid ${PALETTE.primary.main}`,
+                    },
+                },
+                {
+                    props: { variant: 'contained', color: 'secondary' },
+                    style: {
+                        border: `1px solid ${PALETTE.secondary.light}`,
+                    },
+                },
+            ],
+        },
     }
 });

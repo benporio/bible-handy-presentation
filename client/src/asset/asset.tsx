@@ -1,7 +1,7 @@
 import React from 'react';
 import { ReactComponent as Logo } from './images/logo.svg';
 
-type AppLogoProps = {
+interface AppLogoProps extends React.SVGProps<SVGSVGElement> {
     style?: React.CSSProperties
 }
 
