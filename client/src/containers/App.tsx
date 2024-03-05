@@ -13,7 +13,7 @@ const user: User = {
     username: '',
     password: '',
     uuid: '',
-    isLoggedIn: false
+    isLoggedIn: true
 }
 
 const App: React.FC = () => {

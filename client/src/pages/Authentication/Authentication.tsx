@@ -8,7 +8,6 @@ interface AuthenticationProps { }
 export const Authentication: React.FC<AuthenticationProps> = () => {
     const [ authMethod, setAuthMethod ] = useState('LOGIN');
     return (
-        
         <Container >
             <Grid container padding={5} justifyContent='center'>
                 {authMethod === 'LOGIN' ? 

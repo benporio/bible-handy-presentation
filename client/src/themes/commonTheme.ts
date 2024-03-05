@@ -27,8 +27,7 @@ export const commonTheme = createTheme({
         MuiGrid: {
             styleOverrides: {
                 root: {
-                    borderRadius: 16,
-                    backgroundColor: '#060E0F'
+                    backgroundColor: PALETTE.background.default,
                 }, 
             },
             variants: [
@@ -36,12 +35,16 @@ export const commonTheme = createTheme({
                     props: { className: 'primary' },
                     style: {
                         border: `1px solid ${PALETTE.primary.light}`,
+                        backgroundColor: '#060E0F',
+                        borderRadius: 16,
                     },
                 },
                 {
                     props: { className: 'secondary' },
                     style: {
                         border: `1px solid ${PALETTE.secondary.light}`,
+                        backgroundColor: '#060E0F',
+                        borderRadius: 16,
                     },
                 },
             ],

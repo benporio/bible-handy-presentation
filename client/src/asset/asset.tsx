@@ -1,12 +1,19 @@
 import React from 'react';
-import { ReactComponent as Logo } from './images/logo.svg';
+import { ReactComponent as LogoSvg } from './images/logo.svg';
+import { ReactComponent as AnonymousProfilePicSvg } from './images/anonymousProfilePic.svg';
 
-interface AppLogoProps extends React.SVGProps<SVGSVGElement> {
+interface assetProps extends React.SVGProps<SVGSVGElement> {
     style?: React.CSSProperties
 }
 
-export const AppLogo: React.FC<AppLogoProps> = ({
+export const AppLogo: React.FC<assetProps> = ({
     style
 }) => {
-    return <Logo style={style} />;
+    return <LogoSvg style={style} />;
+}
+
+export const AnonymousProfilePic: React.FC<assetProps> = ({
+    style
+}) => {
+    return <AnonymousProfilePicSvg style={style} />;
 }
