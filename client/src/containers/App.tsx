@@ -5,7 +5,7 @@ import { ThemeProvider } from "@mui/material/styles";
 import { Home } from '../pages/Home/Home';
 import { commonTheme } from '../themes/commonTheme';
 import { User } from '../types/User';
-import { Outlet } from 'react-router-dom';
+import { Authentication } from '../pages/Authentication/Authentication';
 
 const user: User = {
     id: '',
@@ -21,7 +21,7 @@ const App: React.FC = () => {
         <ThemeProvider theme={commonTheme}>
             <CssBaseline />
             <Box>
-                {user.isLoggedIn ? <Home /> : <Outlet  />}
+                {user.isLoggedIn ? <Home /> : <Authentication  />}
             </Box>
         </ThemeProvider>
     );

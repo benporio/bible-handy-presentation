@@ -24,6 +24,28 @@ const PALETTE = {
 export const commonTheme = createTheme({
     palette: PALETTE,
     components: {
+        MuiGrid: {
+            styleOverrides: {
+                root: {
+                    borderRadius: 16,
+                    backgroundColor: '#060E0F'
+                }, 
+            },
+            variants: [
+                {
+                    props: { className: 'primary' },
+                    style: {
+                        border: `1px solid ${PALETTE.primary.light}`,
+                    },
+                },
+                {
+                    props: { className: 'secondary' },
+                    style: {
+                        border: `1px solid ${PALETTE.secondary.light}`,
+                    },
+                },
+            ],
+        },
         MuiInputLabel: {
             styleOverrides: {
                 root: {

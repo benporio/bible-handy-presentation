@@ -7,7 +7,6 @@ import 'tachyons';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { CssBaseline } from '@mui/material';
 import { ThemeProvider } from "@mui/material/styles";
-import { Pages } from './app/Pages';
 import { commonTheme } from './themes/commonTheme';
 
 const root = ReactDOM.createRoot(
@@ -21,7 +20,7 @@ root.render(
                 <BrowserRouter>
                     <Routes>
                         <Route path="/" element={<App />} >
-                        {Pages.map(item => <Route  key={item.id} path={item.route} element={item.page} />)}
+                        {/* {Pages.map(item => <Route  key={item.id} path={item.route} element={item.page} />)} */}
                         </Route>
                     </Routes>
                 </BrowserRouter>
