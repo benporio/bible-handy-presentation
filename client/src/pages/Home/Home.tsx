@@ -10,7 +10,9 @@ export const Home: React.FC<HomeProps> = () => {
             <Grid item style={{
                 position: 'sticky',
                 top: 0,
-                borderBottom: '0.1% solid gray',
+                borderBottom: '1px solid #26323E',
+                backgroundColor: '#101418',
+                zIndex: 10,
             }} padding={2}>
                 <Grid container direction={'column'} rowSpacing={2}>
                     <Grid item>
@@ -47,9 +49,9 @@ export const Home: React.FC<HomeProps> = () => {
             </Grid>
             <Grid item>
                 <Container>
-                    <Grid container padding={2} justifyContent={'center'} alignItems={'center'} direction={'column'}>
+                    <Grid container spacing={3} padding={2} justifyContent={'center'} alignItems={'center'} direction={'column'}>
                         <Grid item>
-                            <Grid container spacing={3} alignItems={'center'}>
+                            <Grid container columnSpacing={3} alignItems={'center'}>
                                 <Grid item xs={4}>
                                     <TextField
                                         variant='outlined'
@@ -94,7 +96,7 @@ export const Home: React.FC<HomeProps> = () => {
                                         color='primary'
                                         fullWidth
                                         inputProps={{
-                                            style: { height: '100%' }
+                                            style: { height: '100%' },
                                         }}
                                     />
                                 </Grid>
