@@ -25,11 +25,11 @@ export const commonTheme = createTheme({
     palette: PALETTE,
     components: {
         MuiGrid: {
-            styleOverrides: {
-                root: {
-                    backgroundColor: PALETTE.background.default,
-                }, 
-            },
+            // styleOverrides: {
+            //     root: {
+            //         backgroundColor: PALETTE.background.default,
+            //     }, 
+            // },
             variants: [
                 {
                     props: { className: 'primary' },
