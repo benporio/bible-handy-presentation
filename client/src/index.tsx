@@ -8,6 +8,8 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { CssBaseline } from '@mui/material';
 import { ThemeProvider } from "@mui/material/styles";
 import { commonTheme } from './themes/commonTheme';
+import { Pages } from './app/Pages';
+import { StartingPage } from './pages/StartingPage/StartingPage';
 
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
@@ -20,7 +22,13 @@ root.render(
                 <BrowserRouter>
                     <Routes>
                         <Route path="/" element={<App />} >
-                        {/* {Pages.map(item => <Route  key={item.id} path={item.route} element={item.page} />)} */}
+                        {Pages.filter(item => item.context === 'app').map(item => <Route key={item.id} path={item.route} element={item.page} />)}
+                        </Route>
+                    </Routes>
+                    <Routes>
+                        <Route path="/app" element={<StartingPage />} >
+                        {Pages.filter(item => item.label === 'App')[0]
+                            .subPages?.map(item => <Route  key={item.id} path={item.route} element={item.page} />)}
                         </Route>
                     </Routes>
                 </BrowserRouter>

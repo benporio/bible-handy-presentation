@@ -3,6 +3,7 @@ import { Button, Grid, TextField } from '@mui/material';
 import { AppLogo } from '../../../asset/asset';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from 'react-router';
 
 interface LoginFormProps { 
     setAuthMethod: React.Dispatch<React.SetStateAction<string>>
@@ -11,6 +12,7 @@ interface LoginFormProps {
 export const LoginForm: React.FC<LoginFormProps> = ({
     setAuthMethod
 }) => {
+    const navigate = useNavigate();
     return (
         <Grid item className='primary' style={{ height: '600px', width: '700px' }}>
             <Grid container direction='column' justifyContent='flex-end' height='100%' margin={0} padding={2} >
@@ -47,7 +49,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                             </Grid>
                         </Grid>
                         <Grid item>
-                            <Button color='primary' variant='contained' size='medium' autoFocus={false}>
+                            <Button onClick={() => navigate('/app/home')} color='primary' variant='contained' size='medium' autoFocus={false}>
                                 <span className='b f4'>SIGN IN</span>
                             </Button>
                         </Grid>

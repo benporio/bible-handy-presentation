@@ -1,27 +1,32 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import '../asset/css/App.css';
 import { Box, CssBaseline } from '@mui/material';
 import { ThemeProvider } from "@mui/material/styles";
-import { Home } from '../pages/Home/Home';
+// import { StartingPage } from '../pages/StartingPage/StartingPage';
 import { commonTheme } from '../themes/commonTheme';
-import { User } from '../types/User';
-import { Authentication } from '../pages/Authentication/Authentication';
+// import { User } from '../types/User';
+// import { Authentication } from '../pages/Authentication/Authentication';
+import { Outlet, useNavigate } from 'react-router';
 
-const user: User = {
-    id: '',
-    email: '',
-    username: '',
-    password: '',
-    uuid: '',
-    isLoggedIn: true
-}
+// const user: User = {
+//     id: '',
+//     email: '',
+//     username: '',
+//     password: '',
+//     uuid: '',
+//     isLoggedIn: true
+// }
 
 const App: React.FC = () => {
+    const navigate = useNavigate();
+    useEffect(() => {
+        navigate('/auth');
+    }, [])
     return (
         <ThemeProvider theme={commonTheme}>
             <CssBaseline />
             <Box>
-                {user.isLoggedIn ? <Home /> : <Authentication  />}
+                <Outlet />
             </Box>
         </ThemeProvider>
     );

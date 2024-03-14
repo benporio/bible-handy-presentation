@@ -3,6 +3,7 @@ import { Button, Grid, TextField } from '@mui/material';
 import { AppLogo } from '../../../asset/asset';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleChevronLeft } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from 'react-router';
 
 interface RegisterFormProps { 
     setAuthMethod: React.Dispatch<React.SetStateAction<string>>
@@ -11,6 +12,7 @@ interface RegisterFormProps {
 export const RegisterForm: React.FC<RegisterFormProps> = ({
     setAuthMethod
 }) => {
+    const navigate = useNavigate();
     return (
         <Grid item className='secondary' style={{ height: '600px', width: '700px' }}>
             <Grid container direction='column' justifyContent='flex-end' height='100%' margin={0} padding={2} >
@@ -100,7 +102,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                             </Grid>
                         </Grid>
                         <Grid item>
-                            <Button color='secondary' variant='contained' size='medium' autoFocus={false}>
+                            <Button onClick={() => navigate('/app/home')} color='secondary' variant='contained' size='medium' autoFocus={false}>
                                 <span className='b f4'>SIGN UP</span>
                             </Button>
                         </Grid>
