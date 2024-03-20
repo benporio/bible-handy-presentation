@@ -1,7 +1,7 @@
 import { Grid } from '@mui/material';
 import React from 'react';
 import { AnonymousProfilePic, AppLogo } from '../../asset/asset';
-import { PageComponent } from '../../app/Pages';
+import { PageComponent } from '../../app/pages';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 interface NavigationProps { 

@@ -2,6 +2,8 @@ import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
 import path from 'path';
 import express, { Express, NextFunction, Request, Response } from 'express';
+import errorhandler from 'strong-error-handler';
+import { auth } from '../routes/auth';
 
 dotenv.config();
 
@@ -33,3 +35,18 @@ if (process.env.MODE === 'PROD') {
     // serve react app
     app.use(express.static(path.join(__dirname, CLIENT_BUILD_DIR)));
 }
+
+app.use((req: Request, res: Response, next: NextFunction) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Expose-Headers", "x-total-count");
+    res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,PATCH");
+    res.header("Access-Control-Allow-Headers", "Content-Type,authorization");
+    next();
+});
+
+app.use('/auth', auth);
+
+app.use(errorhandler({
+    debug: process.env.ENV !== 'prod',
+    log: true,
+}));

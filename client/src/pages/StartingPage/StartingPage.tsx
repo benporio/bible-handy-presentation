@@ -2,7 +2,7 @@ import { Grid } from '@mui/material';
 import React, { useEffect } from 'react';
 import { Navigation } from '../../components/Navigation/Navigation';
 import { Outlet, useNavigate } from 'react-router';
-import { PageComponent, Pages } from '../../app/Pages';
+import { PageComponent, Pages } from '../../app/pages';
 
 interface StartingPageProps { }
 
