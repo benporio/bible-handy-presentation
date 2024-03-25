@@ -4,8 +4,12 @@ import path from 'path';
 import express, { Express, NextFunction, Request, Response } from 'express';
 import errorhandler from 'strong-error-handler';
 import { auth } from '../routes/auth';
+import mongoose from 'mongoose';
 
 dotenv.config();
+
+mongoose.connect(process.env.MONGODB_URL as string);
+mongoose.set('debug', process.env.MODE !== 'PROD');
 
 export const app: Express = express();
 
@@ -44,7 +48,9 @@ app.use((req: Request, res: Response, next: NextFunction) => {
     next();
 });
 
-app.use('/auth', auth);
+const baseRoute: string = '/api/v1'
+
+app.use(`${baseRoute}/auth`, auth);
 
 app.use(errorhandler({
     debug: process.env.ENV !== 'prod',

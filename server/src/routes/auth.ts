@@ -1,10 +1,11 @@
 import { Router, NextFunction, Request, Response } from "express";
 import AuthController from "../controllers/AuthController";
+import { ActionResponse } from '../types/ActionResult'
 
 export const auth = Router();
 
-auth.post('/register', async (req: Request, res: Response, next: NextFunction) => {
+auth.post('/register', (req: Request, res: Response, next: NextFunction) => {
     AuthController.register(req.body)
-        .then(loginUser => res.status(201).json(loginUser))
+        .then((actionResponse: ActionResponse) => res.status(actionResponse.statusCode).json(actionResponse))
         .catch(e => next(e));
 });

@@ -1,5 +1,6 @@
 import { model, Schema, Model, Document, HydratedDocument, CallbackWithoutResultAndOptionalError } from 'mongoose';
 import bcrypt from 'bcrypt'
+import Log, { ILog, logSchema } from './Log'
 
 export interface IUser extends Document {
     firstName: string
@@ -7,11 +8,12 @@ export interface IUser extends Document {
     userName: string
     email: string
     password: string
+    log: ILog
 }
 
 type UserModel = Model<IUser>
 
-const userSchema: Schema<IUser, UserModel> = new Schema({
+export const userSchema: Schema<IUser, UserModel> = new Schema({
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
     userName: { 
@@ -35,6 +37,7 @@ const userSchema: Schema<IUser, UserModel> = new Schema({
         },
     },
     password: { type: String, required: true },
+    log: { type: logSchema, required: true },
 }, {
     methods: {
         getFullName: function(): string {

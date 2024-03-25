@@ -13,37 +13,43 @@ const collectionName = 'users';
         await client.connect();
         console.log('Connected to MongoDB');
         const db = client.db(dbName);
-        const users = [{
-            "firstName": "Guendolen",
-            "lastName": "Clifforth",
-            "userName": "gclifforth0",
-            "email": "gclifforth0@europa.eu",
-            "password": "vF5*?7OJjd!Ip"
-        }, {
-            "firstName": "Lorenza",
-            "lastName": "Sisland",
-            "userName": "lsisland1",
-            "email": "lsisland1@example.com",
-            "password": "nP5_6|)1l\\="
-        }, {
-            "firstName": "Ingeberg",
-            "lastName": "Bonifazio",
-            "userName": "ibonifazio2",
-            "email": "ibonifazio2@unc.edu",
-            "password": "rG2'v|'P"
-        }, {
-            "firstName": "Elisabeth",
-            "lastName": "Verma",
-            "userName": "everma3",
-            "email": "everma3@uiuc.edu",
-            "password": "xT4'yFDS78U"
-        }, {
-            "firstName": "Ertha",
-            "lastName": "Woodburn",
-            "userName": "ewoodburn4",
-            "email": "ewoodburn4@blogspot.com",
-            "password": "gC0+Mc?F_B"
-        }]
+        const users = [
+            {
+                "firstName": "Creight",
+                "lastName": "McLanaghan",
+                "userName": "cmclanaghan0",
+                "email": "cmclanaghan0@webnode.com",
+                "password": "$2a$04$Co7QxqJwX2mw6LqadOeHkuqUVQQhRYUDIj0taMJmvW1WpicSajv2m"
+            },
+            {
+                "firstName": "Kimberly",
+                "lastName": "Courtonne",
+                "userName": "kcourtonne1",
+                "email": "kcourtonne1@thetimes.co.uk",
+                "password": "$2a$04$k53exOXqcOYhY47CpcYjgeOy9f0Zh4RF3dU2pwJrmMXmIKZZdMdb6"
+            },
+            {
+                "firstName": "Wolfgang",
+                "lastName": "Kidner",
+                "userName": "wkidner2",
+                "email": "wkidner2@webeden.co.uk",
+                "password": "$2a$04$98/d4TAdkn81l8j5Q3uIp.6g6EkTrkcHuGkRX3RPZyzDRMw2FuOl6"
+            },
+            {
+                "firstName": "Emmaline",
+                "lastName": "Ovanesian",
+                "userName": "eovanesian3",
+                "email": "eovanesian3@tumblr.com",
+                "password": "$2a$04$yRIFAyXrWuzsTabMfZWDYedwGSIu414k15MZ2TVdAu3OK9TvCqciy"
+            },
+            {
+                "firstName": "Dev",
+                "lastName": "Beri",
+                "userName": "dberi4",
+                "email": "dberi4@uol.com.br",
+                "password": "$2a$04$ZqX9yS4zNlBga8vc4R/Ble3yU75eGtXeuarbBWHyEzTXFOB94i0cS"
+            }
+        ]
         await db.collection('users').insertMany(users);
         console.log(`Inserted ${users.length} record(s) to ${collectionName} collection.`);
     } catch (err) {
