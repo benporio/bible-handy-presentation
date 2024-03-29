@@ -1,13 +1,13 @@
 import HttpStatusCode from "../../constants/httpStatusCode";
 import { IUser } from "../models/User";
 import AuthService from "../services/AuthService";
-import { ActionResult, ActionResponse } from "../types/ActionResult";
+import { ServiceResult, HttpResponseData } from "../types/ActionResult";
 
 class AuthController {
-    public async register(requestBody: any): Promise<ActionResponse> {
+    public async register(requestBody: any): Promise<HttpResponseData> {
         try {
             const newUser: IUser = requestBody as IUser;
-            const actionResult: ActionResult = await AuthService.register(newUser)
+            const actionResult: ServiceResult = await AuthService.register(newUser)
                 .catch(e => {
                     throw e
                 });

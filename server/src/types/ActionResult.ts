@@ -1,17 +1,17 @@
 import HttpStatusCode from "../../constants/httpStatusCode"
 
-export type ActionMessages = {
+export type ServiceMessage = {
     type: 'info' | 'warning' | 'error'
-    messages: string
+    message: string
     details: any
 }
 
-export type ActionResult = {
+export type ServiceResult = {
     status: 'success' | 'error'
     data?: any
-    message?: string | ActionMessages[]
+    message?: string | ServiceMessage[]
 }
 
-export type ActionResponse = {
+export type HttpResponseData = {
     statusCode: HttpStatusCode
-} & ActionResult
+} & ServiceResult

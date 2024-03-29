@@ -5,19 +5,22 @@ import express, { Express, NextFunction, Request, Response } from 'express';
 import errorhandler from 'strong-error-handler';
 import { auth } from '../routes/auth';
 import mongoose from 'mongoose';
+import morganMiddleware from './morganMiddleware';
 
 dotenv.config();
 
 mongoose.connect(process.env.MONGODB_URL as string);
 mongoose.set('debug', process.env.MODE !== 'PROD');
 
-export const app: Express = express();
+const app: Express = express();
 
 // middleware for parsing application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // middleware for json body parsing
 app.use(bodyParser.json({ limit: '5mb' }));
+
+app.use(morganMiddleware);
 
 if (process.env.MODE === 'PROD') {
     const CLIENT_BUILD_DIR: string = 'build';
@@ -48,11 +51,17 @@ app.use((req: Request, res: Response, next: NextFunction) => {
     next();
 });
 
-const baseRoute: string = '/api/v1'
+app.get('/', (req: Request, res: Response) => {
+    res.status(200).send('BHP App is running');
+});
 
-app.use(`${baseRoute}/auth`, auth);
+export const apiV1BaseRoute: string = '/api/v1'
+
+app.use(`${apiV1BaseRoute}/auth`, auth);
 
 app.use(errorhandler({
     debug: process.env.ENV !== 'prod',
     log: true,
 }));
+
+export default app

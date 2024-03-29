@@ -1,28 +1,19 @@
-import Log from "../models/Log";
-import User, { HydratedUserDoc, IUser } from "../models/User";
-import { ActionResult } from "../types/ActionResult";
+import { HydratedUserDoc, IUser, UserFactory } from "../models/User";
+import { ServiceResult } from "../types/ActionResult";
 import PromiseUtil, { PromiseResolver, PromiseRejecter, PromiseErrorHandler } from '../utils/PromiseUtil'
 
 class AuthService {
-    public async register(user: IUser): Promise<ActionResult> {
-        const result: ActionResult = { status: 'error' }
+    public async register(user: IUser): Promise<ServiceResult> {
+        const result: ServiceResult = { status: 'error' }
         const { email } = user;
-        const existingUser = await User.findOne({ email });
+        const existingUser = await UserFactory.findOne({ email });
         if (existingUser!==null) return new Promise(resolve => resolve({
             ...result,
             status: 'error',
             message: 'Email already in used'
         }));
-        const newUser: HydratedUserDoc = new User(user);
-        newUser.log = new Log({
-            logDateCreated: null,
-            logCreatedByUserId: '',
-            logDateUpdated: null,
-            logUpdatedByUserId: '',
-            logDateDeleted: null,
-            logDeletedByUserId: '',
-        })
-        return await PromiseUtil.createPromise<ActionResult>((resolve, reject) => {
+        const newUser: HydratedUserDoc = UserFactory.createUser(user);
+        return await PromiseUtil.createPromise<ServiceResult>((resolve, reject) => {
             newUser.save()
             .then(userRes => {
                 resolve({
@@ -39,7 +30,7 @@ class AuthService {
                         status: 'error',
                         message: [{
                             type: 'error',
-                            messages: 'Cannot register user. Validation failure.',
+                            message: 'Cannot register user. Validation failure.',
                             details: error
                         }]
                     });

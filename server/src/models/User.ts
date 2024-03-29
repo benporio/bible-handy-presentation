@@ -1,13 +1,15 @@
 import { model, Schema, Model, Document, HydratedDocument, CallbackWithoutResultAndOptionalError } from 'mongoose';
 import bcrypt from 'bcrypt'
-import Log, { ILog, logSchema } from './Log'
+import { HydratedLogDoc, ILog, LogFactory, logSchema } from './Log'
 
-export interface IUser extends Document {
+export interface IUserInfo {
     firstName: string
     lastName: string
     userName: string
     email: string
     password: string
+}
+export interface IUser extends IUserInfo, Document {
     log: ILog
 }
 
@@ -66,4 +68,29 @@ userSchema.pre<IUser>('save', function(next: CallbackWithoutResultAndOptionalErr
 
 export type HydratedUserDoc = HydratedDocument<IUser>
 
-export default model<IUser, UserModel>('User', userSchema);
+const User = model<IUser, UserModel>('User', userSchema);
+
+export class UserFactory extends User {
+    private constructor() {
+        super();
+    }
+    public static createUser(user: IUserInfo | undefined): HydratedUserDoc {
+        const newLog: HydratedLogDoc = LogFactory.createLog();
+        if (!!user) {
+            const newUser: HydratedUserDoc = new User({
+                ...user,
+                log: newLog
+            });
+            return newUser;
+        }
+        const newUser: HydratedUserDoc = new User({
+            firstName: '',
+            lastName: '',
+            userName: '',
+            email: '',
+            password: '',
+            log: newLog
+        });
+        return newUser;
+    }
+}

@@ -27,13 +27,29 @@ export const logSchema: Schema<ILog, LogModel> = new Schema({
     }
 });
 
-logSchema.pre<ILog>('save', function(next: CallbackWithoutResultAndOptionalError) {
-    if (this.isNew) {
-        this.logDateCreated = new Date();
+const savePreCallback = (iLog: ILog, next: CallbackWithoutResultAndOptionalError) => {
+    if (iLog.isNew) {
+        iLog.logDateCreated = new Date();
     } else {
-        this.logDateUpdated = new Date();
+        iLog.logDateUpdated = new Date();
     }
     next()
+}
+
+logSchema.pre<ILog>('save', function(next: CallbackWithoutResultAndOptionalError) {
+    savePreCallback(this, next);
+});
+
+logSchema.pre<ILog>('updateOne', function(next: CallbackWithoutResultAndOptionalError) {
+    savePreCallback(this, next);
+});
+
+logSchema.pre<ILog>('updateMany', function(next: CallbackWithoutResultAndOptionalError) {
+    savePreCallback(this, next);
+});
+
+logSchema.pre<ILog>('findOneAndUpdate', function(next: CallbackWithoutResultAndOptionalError) {
+    savePreCallback(this, next);
 });
 
 const deletePreCallback = (iLog: ILog, next: CallbackWithoutResultAndOptionalError) => {
@@ -54,4 +70,20 @@ logSchema.pre<ILog>('findOneAndDelete', function(next: CallbackWithoutResultAndO
 
 export type HydratedLogDoc = HydratedDocument<ILog>
 
-export default model<ILog, LogModel>('Log', logSchema);
+const Log = model<ILog, LogModel>('Log', logSchema);
+
+export class LogFactory extends Log {
+    private constructor() {
+        super();
+    }
+    public static createLog(): HydratedLogDoc {
+        return new Log({
+            logDateCreated: null,
+            logCreatedByUserId: '',
+            logDateUpdated: null,
+            logUpdatedByUserId: '',
+            logDateDeleted: null,
+            logDeletedByUserId: '',
+        });
+    }
+}
