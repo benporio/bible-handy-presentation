@@ -16,6 +16,10 @@ afterAll(async () => {
     await mongoose.connection.close();
 });
 
+const assessSecurityData = (responseBody: any) => {
+    expect(responseBody.password).toBeUndefined();
+}
+
 describe(`POST ${apiV1BaseRoute}/auth/register`, () => {
     const sampleUser = {
         firstName: 'Benedict',
@@ -29,6 +33,7 @@ describe(`POST ${apiV1BaseRoute}/auth/register`, () => {
             .post(`${apiV1BaseRoute}/auth/register`)
             .send(sampleUser)
         expect(response.statusCode).toBe(HttpStatusCode.CREATED_201);
+        assessSecurityData(response.body)
         expect(response.body).toHaveProperty('status');
         expect(response.body).toHaveProperty('data');
         expect(response.body).toHaveProperty('message');
@@ -40,6 +45,7 @@ describe(`POST ${apiV1BaseRoute}/auth/register`, () => {
             .post(`${apiV1BaseRoute}/auth/register`)
             .send(sampleUser)
         expect(response.statusCode).toBe(HttpStatusCode.BAD_REQUEST_400);
+        assessSecurityData(response.body)
         expect(response.body).toHaveProperty('status');
         expect(response.body).toHaveProperty('message');
     });
@@ -55,6 +61,7 @@ describe(`POST ${apiV1BaseRoute}/auth/login`, () => {
             .post(`${apiV1BaseRoute}/auth/login`)
             .send(sampleLogin)
         expect(response.statusCode).toBe(HttpStatusCode.OK_200);
+        assessSecurityData(response.body)
         expect(response.body).toHaveProperty('status');
         expect(response.body).toHaveProperty('data');
         expect(response.body).toHaveProperty('message');
@@ -65,6 +72,7 @@ describe(`POST ${apiV1BaseRoute}/auth/login`, () => {
             .post(`${apiV1BaseRoute}/auth/login`)
             .send({ ...sampleLogin, password: "nP5_6|)1l\\=x" })
         expect(response.statusCode).toBe(HttpStatusCode.UNAUTHORIZED_401);
+        assessSecurityData(response.body)
         expect(response.body).toHaveProperty('status');
         expect(response.body).toHaveProperty('message');
     });

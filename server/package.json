@@ -8,7 +8,8 @@
     "build": "npx tsc && webpack",
     "test": "jest --verbose --detectOpenHandles",
     "clientDev": "npm start --prefix ../client/",
-    "dev": "npm run build && concurrently \"npm run clientDev\" \"npx tsc --watch\" \"nodemon -q dist/index.js\""
+    "fullDev": "npm run build && concurrently \"npm run clientDev\" \"npx tsc --watch\" \"nodemon -q dist/index.js\"",
+    "dev": "npm run build && concurrently \"npx tsc --watch\" \"nodemon -q dist/index.js\""
   },
   "keywords": [],
   "author": "",
@@ -39,6 +40,7 @@
     "ts-jest": "^29.1.2",
     "ts-loader": "^9.5.1",
     "ts-node": "^10.9.2",
+    "ts-transformer-keys": "^0.4.4",
     "typescript": "^5.4.2",
     "webpack": "^5.90.1",
     "webpack-cli": "^5.1.4",

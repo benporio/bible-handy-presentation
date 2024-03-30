@@ -1,4 +1,4 @@
-import { HydratedUserDoc, ILoginInfo, IUser, UserFactory } from "../models/User";
+import { HydratedUserDoc, ILoginInfo, IUser, IUserInfo, UserFactory } from "../models/User";
 import { ServiceResult } from "../types/ActionResult";
 import Logger from "../utils/Logger";
 import PromiseUtil from '../utils/PromiseUtil'
@@ -17,11 +17,11 @@ class AuthService {
         const newUser: HydratedUserDoc = UserFactory.createUser(user);
         return await PromiseUtil.createPromise<ServiceResult>((resolve, reject) => {
             newUser.save()
-            .then(userRes => {
+            .then((userRes) => {
                 resolve({
                     ...result,
                     status: 'success',
-                    data: userRes,
+                    data: UserFactory.prepUserData(userRes as IUser),
                     message: 'User is registered sussessfully'
                 });
             })
@@ -45,7 +45,7 @@ class AuthService {
     public async login(loginInfo: ILoginInfo): Promise<ServiceResult> {
         const result: ServiceResult = { status: 'error' }
         const { email, password } = loginInfo
-        const existingUsers = await UserFactory.find({ email });
+        const existingUsers= await UserFactory.find({ email });
         const isValid = !!existingUsers && existingUsers.length===1 && bcrypt.compareSync(password, existingUsers[0].password);
         if (!isValid) {
             if (existingUsers.length > 1) Logger.error(`Emmail: ${email} has ${existingUsers.length} instances`)
@@ -58,7 +58,7 @@ class AuthService {
         return {
             ...result,
             status: 'success',
-            data: existingUsers[0],
+            data: UserFactory.prepUserData(existingUsers[0] as IUser),
             message: 'Login successful'
         };
     }    

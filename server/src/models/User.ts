@@ -43,11 +43,6 @@ export const userSchema: Schema<IUser, UserModel> = new Schema({
     password: { type: String, required: true },
     log: { type: logSchema, required: true },
 }, {
-    methods: {
-        getFullName: function(): string {
-            return `${this.firstName} ${this.lastName}`
-        }
-    },
     virtuals: {
         fullName: {
             get() {
@@ -56,6 +51,10 @@ export const userSchema: Schema<IUser, UserModel> = new Schema({
         }
     }
 });
+
+userSchema.methods.getFullName = function(): string {
+    return `${this.firstName} ${this.lastName}`
+}
 
 export const hashPassword = async (password: string, next?: CallbackWithoutResultAndOptionalError) => {
     return bcrypt.genSalt(10)
@@ -100,6 +99,7 @@ userSchema.pre<IUser>('findOneAndUpdate', function(next: CallbackWithoutResultAn
 
 export type HydratedUserDoc = HydratedDocument<IUser>
 
+
 const User = model<IUser, UserModel>('User', userSchema);
 
 export class UserFactory extends User {
@@ -124,5 +124,9 @@ export class UserFactory extends User {
             log: newLog
         });
         return newUser;
+    }
+    public static prepUserData(user: IUser): IUserInfo {
+        const { firstName, lastName, userName } = user;
+        return { firstName, lastName, userName }
     }
 }
