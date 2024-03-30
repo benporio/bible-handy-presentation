@@ -2,14 +2,16 @@ import { model, Schema, Model, Document, HydratedDocument, CallbackWithoutResult
 import bcrypt from 'bcrypt'
 import { HydratedLogDoc, ILog, LogFactory, logSchema } from './Log'
 
+export interface ILoginInfo {
+    email: string
+    password: string
+}
 export interface IUserInfo {
     firstName: string
     lastName: string
     userName: string
-    email: string
-    password: string
 }
-export interface IUser extends IUserInfo, Document {
+export interface IUser extends IUserInfo, ILoginInfo, Document {
     log: ILog
 }
 
@@ -55,15 +57,45 @@ export const userSchema: Schema<IUser, UserModel> = new Schema({
     }
 });
 
+export const hashPassword = async (password: string, next?: CallbackWithoutResultAndOptionalError) => {
+    return bcrypt.genSalt(10)
+    .then((salt: any) => bcrypt.hash(password, salt))
+    .then((hash: any) => {
+        return hash;
+    })
+    .catch((err: any) => next && next(err));
+}
+
 userSchema.pre<IUser>('save', function(next: CallbackWithoutResultAndOptionalError) {
     if (!this.isModified('password')) return next();
-    bcrypt.genSalt(10)
-    .then((salt: any) => bcrypt.hash(this.password, salt))
-    .then((hash: any) => {
-        this.password = hash;
-        next();
-    })
-    .catch((err: any) => next(err));
+    hashPassword(this.password, next).then(hashPassword => {
+        this.password = hashPassword
+        next()
+    }).catch((err: any) => next(err));
+});
+
+userSchema.pre<IUser>('updateOne', function(next: CallbackWithoutResultAndOptionalError) {
+    if (!this.isModified('password')) return next();
+    hashPassword(this.password, next).then(hashPassword => {
+        this.password = hashPassword
+        next()
+    }).catch((err: any) => next(err));
+});
+
+userSchema.pre<IUser>('updateMany', function(next: CallbackWithoutResultAndOptionalError) {
+    if (!this.isModified('password')) return next();
+    hashPassword(this.password, next).then(hashPassword => {
+        this.password = hashPassword
+        next()
+    }).catch((err: any) => next(err));
+});
+
+userSchema.pre<IUser>('findOneAndUpdate', function(next: CallbackWithoutResultAndOptionalError) {
+    if (!this.isModified('password')) return next();
+    hashPassword(this.password, next).then(hashPassword => {
+        this.password = hashPassword
+        next()
+    }).catch((err: any) => next(err));
 });
 
 export type HydratedUserDoc = HydratedDocument<IUser>

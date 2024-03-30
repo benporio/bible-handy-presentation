@@ -6,11 +6,23 @@ import errorhandler from 'strong-error-handler';
 import { auth } from '../routes/auth';
 import mongoose from 'mongoose';
 import morganMiddleware from './morganMiddleware';
+import Logger from '../utils/Logger';
 
 dotenv.config();
 
 mongoose.connect(process.env.MONGODB_URL as string);
 mongoose.set('debug', process.env.MODE !== 'PROD');
+
+process.on('SIGINT', async () => {
+    try {
+        await mongoose.connection.close();
+        Logger.debug('Mongoose connection closed.');
+        process.exit(0);
+    } catch (error) {
+        Logger.error('Error closing Mongoose connection:', error);
+        process.exit(1);
+    }
+});
 
 const app: Express = express();
 

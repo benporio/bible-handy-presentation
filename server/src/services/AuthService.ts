@@ -1,6 +1,8 @@
-import { HydratedUserDoc, IUser, UserFactory } from "../models/User";
+import { HydratedUserDoc, ILoginInfo, IUser, UserFactory } from "../models/User";
 import { ServiceResult } from "../types/ActionResult";
-import PromiseUtil, { PromiseResolver, PromiseRejecter, PromiseErrorHandler } from '../utils/PromiseUtil'
+import Logger from "../utils/Logger";
+import PromiseUtil from '../utils/PromiseUtil'
+import bcrypt from 'bcrypt'
 
 class AuthService {
     public async register(user: IUser): Promise<ServiceResult> {
@@ -40,6 +42,26 @@ class AuthService {
             });
         })
     }
+    public async login(loginInfo: ILoginInfo): Promise<ServiceResult> {
+        const result: ServiceResult = { status: 'error' }
+        const { email, password } = loginInfo
+        const existingUsers = await UserFactory.find({ email });
+        const isValid = !!existingUsers && existingUsers.length===1 && bcrypt.compareSync(password, existingUsers[0].password);
+        if (!isValid) {
+            if (existingUsers.length > 1) Logger.error(`Emmail: ${email} has ${existingUsers.length} instances`)
+            return new Promise(resolve => resolve({
+                ...result,
+                status: 'error',
+                message: 'Login failed'
+            }));
+        }
+        return {
+            ...result,
+            status: 'success',
+            data: existingUsers[0],
+            message: 'Login successful'
+        };
+    }    
 }
 
 export default (new AuthService()) as AuthService;

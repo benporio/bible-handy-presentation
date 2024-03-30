@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import { MongoClient } from 'mongodb';
+import Logger from '../../src/utils/Logger';
 
 dotenv.config({ path: '../../.env' });
 
@@ -7,13 +8,13 @@ const url = process.env.MONGODB_URL;
 const dbName = process.env.DB_NAME;
 const collectionName = 'users';
 
-(async () => {
+export default async () => {
     const client = new MongoClient(url as string);
     try {
         await client.connect();
-        console.log('Connected to MongoDB');
+        Logger.debug('Connected to MongoDB');
         const db = client.db(dbName);
-        const users = [
+        const users: any[] = [
             {
                 "firstName": "Creight",
                 "lastName": "McLanaghan",
@@ -50,11 +51,42 @@ const collectionName = 'users';
                 "password": "$2a$04$ZqX9yS4zNlBga8vc4R/Ble3yU75eGtXeuarbBWHyEzTXFOB94i0cS"
             }
         ]
+
+        // MODIFICATION STARTS
+
+        users.forEach(user => {
+            user['log'] = {
+                logDateCreated: null,
+                logCreatedByUserId: '',
+                logDateUpdated: null,
+                logUpdatedByUserId: '',
+                logDateDeleted: null,
+                logDeletedByUserId: '',
+            }
+        })
+
+        // MODIFICATION ENDS
+
         await db.collection('users').insertMany(users);
-        console.log(`Inserted ${users.length} record(s) to ${collectionName} collection.`);
+        Logger.info(`Inserted ${users.length} record(s) to ${collectionName} collection.`);
     } catch (err) {
-        console.error('ERROR:', err);
+        Logger.error('ERROR:', err);
     } finally {
         await client.close();
     }
-})()
+}
+
+export const revert = async () => {
+    const client = new MongoClient(url as string);
+    try {
+        await client.connect();
+        Logger.debug('Connected to MongoDB');
+        const db = client.db(dbName);
+        const result = await db.collection('users').deleteMany({});
+        Logger.info(`Deleted ${result.deletedCount} record(s) from ${collectionName} collection.`);
+    } catch (err) {
+        Logger.error('ERROR:', err);
+    } finally {
+        await client.close();
+    }
+}

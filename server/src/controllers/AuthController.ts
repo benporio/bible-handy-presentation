@@ -1,30 +1,35 @@
 import HttpStatusCode from "../../constants/httpStatusCode";
-import { IUser } from "../models/User";
+import { ILoginInfo, IUser } from "../models/User";
 import AuthService from "../services/AuthService";
-import { ServiceResult, HttpResponseData } from "../types/ActionResult";
+import { ServiceResult, HttpResponseData, HttpResponseInfo } from "../types/ActionResult";
+import AbsController from './AbsContoller'
 
-class AuthController {
+class AuthController extends AbsController {
     public async register(requestBody: any): Promise<HttpResponseData> {
-        try {
-            const newUser: IUser = requestBody as IUser;
-            const actionResult: ServiceResult = await AuthService.register(newUser)
-                .catch(e => {
-                    throw e
-                });
-            return {
-                statusCode: actionResult.status === 'success' ? 
-                    HttpStatusCode.CREATED_201 : HttpStatusCode.BAD_REQUEST_400,
-                ...actionResult,
+        return this.adapter(
+            async () => AuthService.register(requestBody as IUser),
+            {
+                actionResultPostInfo: (actionResult: ServiceResult): HttpResponseInfo => {
+                    return {
+                        statusCode: actionResult.status === 'success' ? 
+                            HttpStatusCode.CREATED_201 : HttpStatusCode.BAD_REQUEST_400,
+                    }
+                }
             }
-        } catch (error) {
-            console.log(error)
-            return {
-                statusCode: HttpStatusCode.INTERNAL_SERVER_ERROR_500,
-                status: 'error',
-                data: error,
-                message: 'Unhandled error'
+        );
+    }
+    public async login(requestBody: any): Promise<HttpResponseData> {
+        return this.adapter(
+            async () => AuthService.login(requestBody as ILoginInfo),
+            {
+                actionResultPostInfo: (actionResult: ServiceResult): HttpResponseInfo => {
+                    return {
+                        statusCode: actionResult.status === 'success' ? 
+                            HttpStatusCode.OK_200 : HttpStatusCode.UNAUTHORIZED_401,
+                    }
+                }
             }
-        }
+        );
     }
 }
 

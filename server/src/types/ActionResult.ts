@@ -12,6 +12,8 @@ export type ServiceResult = {
     message?: string | ServiceMessage[]
 }
 
-export type HttpResponseData = {
+export type HttpResponseInfo = {
     statusCode: HttpStatusCode
-} & ServiceResult
+}
+
+export type HttpResponseData = HttpResponseInfo & ServiceResult

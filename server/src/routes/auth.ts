@@ -9,3 +9,9 @@ auth.post('/register', (req: Request, res: Response, next: NextFunction) => {
         .then((actionResponse: HttpResponseData) => res.status(actionResponse.statusCode).json(actionResponse))
         .catch(e => next(e));
 });
+
+auth.post('/login', (req: Request, res: Response, next: NextFunction) => {
+    AuthController.login(req.body)
+        .then((actionResponse: HttpResponseData) => res.status(actionResponse.statusCode).json(actionResponse))
+        .catch(e => next(e));
+});

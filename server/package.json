@@ -6,7 +6,7 @@
   "scripts": {
     "start": "npm run --prefix ../client/ build && npm run build && node dist/index.js",
     "build": "npx tsc && webpack",
-    "test": "jest --verbose",
+    "test": "jest --verbose --detectOpenHandles",
     "clientDev": "npm start --prefix ../client/",
     "dev": "npm run build && concurrently \"npm run clientDev\" \"npx tsc --watch\" \"nodemon -q dist/index.js\""
   },
