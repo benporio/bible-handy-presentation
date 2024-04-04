@@ -1,40 +1,104 @@
-import React, { useState } from 'react'
+import React, { ChangeEventHandler } from 'react'
 import { Button, Grid, TextField } from '@mui/material';
 import { AppLogo } from '../../../asset/asset';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleChevronLeft } from '@fortawesome/free-solid-svg-icons';
-import { appDispatch, useAppSelector } from '../../../app/hooks';
+import { appDispatch } from '../../../app/hooks';
 import { User, registerUser } from '../authSlice';
+import { ReturnProps, useValidatingInput } from '../../../hooks/useValidatingInput';
+import StringUtil from '../../../utils/StringUtil';
 
 interface RegisterFormProps { 
     setAuthMethod: React.Dispatch<React.SetStateAction<string>>
+}
+
+type RegisterFormInputProps = {
+    value: string
+    error: boolean
+    helperText: string
+    onChange: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>
 }
 
 export const RegisterForm: React.FC<RegisterFormProps> = ({
     setAuthMethod
 }) => {
 
-    const user = useAppSelector((state) => state.auth.user);
     const dispatch = appDispatch()
-
-    const [firstName, setFirstName] = useState<string>(user.firstName);
-    const [lastName, setLastName] = useState<string>(user.lastName);
-    const [userName, setUserName] = useState<string>(user.userName);
-    const [email, setEmail] = useState<string>(user.email);
-    const [password, setPassword] = useState<string>(user.password);
-    const [confirmPassword, setConfirmPassword] = useState<string>('');
+    const validationOpt = { 
+        parseReturnProps<LoginFormInputProps>({value, isError, helperText, handleChange}: ReturnProps): LoginFormInputProps {
+            return {
+                value,
+                error: isError,
+                helperText,
+                onChange: handleChange,
+            } as LoginFormInputProps
+        }
+    } 
+    const firstNameProps: RegisterFormInputProps = useValidatingInput<RegisterFormInputProps>(
+        { initialValue: '',  defaultErrorHelperText: 'Invalid First Name' }, validationOpt
+    ) as RegisterFormInputProps
+    const lastNameProps: RegisterFormInputProps = useValidatingInput<RegisterFormInputProps>(
+        { initialValue: '',  defaultErrorHelperText: 'Invalid Last Name' }, validationOpt
+    ) as RegisterFormInputProps
+    const userNameProps: RegisterFormInputProps = useValidatingInput<RegisterFormInputProps>(
+        { initialValue: '',  defaultErrorHelperText: 'Invalid User Name' }, 
+        { 
+            ...validationOpt, 
+            validation: (value: string) => StringUtil.isValidString(value, new RegExp(/^[A-Za-z0-9]+$/)),
+        }
+    ) as RegisterFormInputProps
+    const emailProps: RegisterFormInputProps = useValidatingInput<RegisterFormInputProps>(
+        { initialValue: '',  defaultErrorHelperText: 'Invalid Email' }, 
+        { 
+            ...validationOpt, 
+            validation: (value: string) => StringUtil.isValidString(value, new RegExp(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/)),
+        }
+    ) as RegisterFormInputProps
+    const passwordProps: RegisterFormInputProps = useValidatingInput<RegisterFormInputProps>(
+        { initialValue: '',  defaultErrorHelperText: 'Invalid Password' }, 
+        { 
+            ...validationOpt, 
+            changeCallback: () => confirmPasswordProps.setValue(''),
+        }
+    ) as RegisterFormInputProps
+    type confirmPasswordReturnProps = RegisterFormInputProps & { setValue: React.Dispatch<React.SetStateAction<string>> }
+    const confirmPasswordProps: confirmPasswordReturnProps = useValidatingInput<confirmPasswordReturnProps>(
+        { initialValue: '',  defaultErrorHelperText: 'Password not matched' }, 
+        { 
+            parseReturnProps<LoginFormInputProps>({value, setValue, isError, helperText, handleChange}: ReturnProps): LoginFormInputProps {
+                return {
+                    value,
+                    setValue,
+                    error: isError,
+                    helperText,
+                    onChange: handleChange,
+                } as LoginFormInputProps
+            }, 
+            validation: (value: string) => value === passwordProps.value,
+        }
+    ) as confirmPasswordReturnProps
+    const isAllValidatingInputValid = !firstNameProps.error && !lastNameProps.error && !userNameProps.error 
+        && !emailProps.error && !passwordProps.error && !confirmPasswordProps.error
+        && !!firstNameProps.value && !!lastNameProps.value && !!userNameProps.value 
+        && !!emailProps.value && !!passwordProps.value && !!confirmPasswordProps.value
+    
+    const registerDisableProps = !isAllValidatingInputValid ? {
+        disabled: true,
+        className: 'disabled'
+    } : {}
 
     const signUpUser: User = {
-        firstName,
-        lastName,
-        userName,
-        email,
-        password,
+        firstName: firstNameProps.value,
+        lastName: lastNameProps.value,
+        userName: userNameProps.value,
+        email: emailProps.value,
+        password: passwordProps.value,
     }
 
     const handleRegister = () => {
-        console.log('called', signUpUser);
-        dispatch(registerUser(signUpUser));
+        if (isAllValidatingInputValid) {
+            dispatch(registerUser(signUpUser));
+        }
     }
 
     return (
@@ -46,12 +110,11 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                     </Grid>
                 </Grid>
                 <Grid item alignSelf='center' marginBottom='auto' marginTop='auto'>
-                    <Grid container padding={4} spacing={4} justifyContent='center' height='auto' alignItems='center' direction='column'>
+                    <Grid container padding={3} spacing={3} justifyContent='center' height='auto' alignItems='center' direction='column'>
                         <Grid item>
                             <Grid container justifyContent='center' spacing={1} direction='row'>
                                 <Grid item xs={6}>
                                     <TextField
-                                        onChange={(e) => setFirstName(e.target.value)}
                                         margin="dense"
                                         label='FIRST NAME'
                                         type='text'
@@ -60,11 +123,11 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                                         inputProps={{
                                             style: { height: '100%' }
                                         }}
+                                        { ...firstNameProps }
                                     />
                                 </Grid>
                                 <Grid item xs={6}>
                                     <TextField
-                                        onChange={(e) => setLastName(e.target.value)}
                                         margin="dense"
                                         label='LAST NAME'
                                         type='text'
@@ -73,11 +136,11 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                                         inputProps={{
                                             style: { height: '100%' }
                                         }}
+                                        { ...lastNameProps }
                                     />
                                 </Grid>
                                 <Grid item xs={5}>
                                     <TextField
-                                        onChange={(e) => setUserName(e.target.value)}
                                         margin="dense"
                                         label='USERNAME'
                                         type='text'
@@ -86,11 +149,11 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                                         inputProps={{
                                             style: { height: '100%' }
                                         }}
+                                        { ...userNameProps }
                                     />
                                 </Grid>
                                 <Grid item xs={8}>
                                     <TextField
-                                        onChange={(e) => setEmail(e.target.value)}
                                         margin="dense"
                                         label='EMAIL ADDRESS'
                                         type='text'
@@ -99,11 +162,11 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                                         inputProps={{
                                             style: { height: '100%' }
                                         }}
+                                        { ...emailProps }
                                     />
                                 </Grid>
                                 <Grid item xs={6}>
                                     <TextField
-                                        onChange={(e) => setPassword(e.target.value)}
                                         margin="dense"
                                         label='PASSWORD'
                                         type='password'
@@ -114,11 +177,11 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                                                 height: '100%', 
                                             }
                                         }}
+                                        { ...passwordProps }
                                     />
                                 </Grid>
                                 <Grid item xs={6}>
                                     <TextField
-                                        onChange={(e) => setConfirmPassword(e.target.value)}
                                         margin="dense"
                                         label='CONFIRM PASSWORD'
                                         type='password'
@@ -127,12 +190,13 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                                         inputProps={{
                                             style: { height: '100%' }
                                         }}
+                                        { ...confirmPasswordProps }
                                     />
                                 </Grid>
                             </Grid>
                         </Grid>
                         <Grid item>
-                            <Button onClick={handleRegister} 
+                            <Button { ...registerDisableProps } onClick={handleRegister} 
                                 color='secondary' variant='contained' size='medium' autoFocus={false}>
                                 <span className='b f4'>SIGN UP</span>
                             </Button>

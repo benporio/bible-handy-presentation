@@ -1,17 +1,22 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-export type User = {
-    firstName: string
-    lastName: string
-    userName: string
+export type LoginInfo = {
     email: string
     password: string
 }
 
+export type UserData = {
+    firstName: string
+    lastName: string
+    userName: string
+}
+
+export type User = LoginInfo & UserData
+
 type AuthState = {
     isLoggedIn: boolean
     isLoggingIn: boolean
-    user: User
+    userData: UserData
     error: any
     isLoggingError: boolean
     isRegistering: boolean
@@ -20,12 +25,10 @@ type AuthState = {
 const initialState: AuthState = {
     isLoggedIn: false,
     isLoggingIn: false,
-    user: {
+    userData: {
         firstName: '',
         lastName: '',
         userName: '',
-        email: '',
-        password: '',
     },
     error: null,
     isLoggingError: false,
@@ -48,7 +51,7 @@ const authSlice = createSlice({
             state.isRegistering = true;
         })
         builder.addCase(registerUser.fulfilled, (state, { payload }) => {
-            state.user = payload
+            state.userData = payload
             state.isLoggedIn = true;
             state.isRegistering = false;
         })
@@ -64,12 +67,25 @@ const authSlice = createSlice({
     },
 })
 
-export const registerUser = createAsyncThunk<User,User>('user/register', async (signUpUser: User) => {
+export const registerUser = createAsyncThunk<UserData,User>('auth/register', async (signUpUser: User) => {
     console.log('called', signUpUser)
     const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/register`, { 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(signUpUser)
+    })
+    // if (response.status === 400) {
+    //     // Return the known error for future handling
+    //     return thunkApi.rejectWithValue((await response.json()) as MyKnownError)
+    // }
+    return (await response.json()) as User
+})
+
+export const loginUser = createAsyncThunk<UserData,LoginInfo>('auth/login', async (loginInfo: LoginInfo) => {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/login`, { 
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(loginInfo)
     })
     // if (response.status === 400) {
     //     // Return the known error for future handling

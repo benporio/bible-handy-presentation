@@ -6,6 +6,7 @@ const PALETTE = {
     },
     background: {
         default: '#101418',
+        grid: '#060E0F',
     },
     primary: {
         main: '#0094FF',
@@ -25,17 +26,12 @@ export const commonTheme = createTheme({
     palette: PALETTE,
     components: {
         MuiGrid: {
-            // styleOverrides: {
-            //     root: {
-            //         backgroundColor: PALETTE.background.default,
-            //     }, 
-            // },
             variants: [
                 {
                     props: { className: 'primary' },
                     style: {
                         border: `1px solid ${PALETTE.primary.light}`,
-                        backgroundColor: '#060E0F',
+                        backgroundColor: PALETTE.background.grid,
                         borderRadius: 16,
                     },
                 },
@@ -43,7 +39,7 @@ export const commonTheme = createTheme({
                     props: { className: 'secondary' },
                     style: {
                         border: `1px solid ${PALETTE.secondary.light}`,
-                        backgroundColor: '#060E0F',
+                        backgroundColor: PALETTE.background.grid,
                         borderRadius: 16,
                     },
                 },
@@ -94,12 +90,33 @@ export const commonTheme = createTheme({
                     style: {
                         border: `1px solid ${PALETTE.primary.main}`,
                     },
+                    
+                },
+                {
+                    props: { variant: 'contained', color: 'primary', className: 'disabled' },
+                    style: {
+                        "&.Mui-disabled": {
+                            background: PALETTE.primary.dark,
+                            color: PALETTE.primary.light,
+                        }
+                    },
+                    
                 },
                 {
                     props: { variant: 'contained', color: 'secondary' },
                     style: {
                         border: `1px solid ${PALETTE.secondary.light}`,
                     },
+                },
+                {
+                    props: { variant: 'contained', color: 'secondary', className: 'disabled' },
+                    style: {
+                        "&.Mui-disabled": {
+                            background: PALETTE.secondary.dark,
+                            color: PALETTE.secondary.light,
+                        }
+                    },
+                    
                 },
             ],
         },

@@ -3,14 +3,17 @@ import { Button, Grid, TextField } from '@mui/material';
 import { AppLogo } from '../../../asset/asset';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleChevronRight } from '@fortawesome/free-solid-svg-icons';
-import { useNavigate } from 'react-router';
+import { appDispatch } from '../../../app/hooks';
+import { loginUser } from '../authSlice';
 import { ReturnProps, useValidatingInput } from '../../../hooks/useValidatingInput';
+import StringUtil from '../../../utils/StringUtil';
 
 interface LoginFormProps { 
     setAuthMethod: React.Dispatch<React.SetStateAction<string>>
 }
 
 type LoginFormInputProps = {
+    value: string
     error: boolean
     helperText: string
     onChange: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>
@@ -19,27 +22,47 @@ type LoginFormInputProps = {
 export const LoginForm: React.FC<LoginFormProps> = ({
     setAuthMethod
 }) => {
+    const dispatch = appDispatch()
     const validationOpt = { 
-        parseReturnProps<LoginFormInputProps>({isError, helperText, handleChange}: ReturnProps): LoginFormInputProps {
+        parseReturnProps<LoginFormInputProps>({value, isError, helperText, handleChange}: ReturnProps): LoginFormInputProps {
             return {
+                value,
                 error: isError,
-                helperText: helperText,
+                helperText,
                 onChange: handleChange,
             } as LoginFormInputProps
         }
     } 
     const emailProps: LoginFormInputProps = useValidatingInput<LoginFormInputProps>(
-        { initialValue: '',  defaultErrorHelperText: 'Invalid Email' }, validationOpt
+        { initialValue: '',  defaultErrorHelperText: 'Invalid Email' }, 
+        { 
+            ...validationOpt, 
+            validation: (value: string) => StringUtil.isValidString(value, new RegExp(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/)),
+        }
     ) as LoginFormInputProps
     const passwordProps: LoginFormInputProps = useValidatingInput<LoginFormInputProps>(
         { initialValue: '',  defaultErrorHelperText: 'Invalid Password' }, validationOpt
     ) as LoginFormInputProps
-    const navigate = useNavigate();
+    const loginInfo = {
+        email: emailProps.value,
+        password: passwordProps.value
+    }
+    const isAllValidatingInputValid = !emailProps.error && !passwordProps.error
+        && !!emailProps.value && !!passwordProps.value
+    const handleLogin = () => {
+        if (isAllValidatingInputValid) {
+            dispatch(loginUser(loginInfo));
+        }
+    }
+    const loginDisableProps = !isAllValidatingInputValid ? {
+        disabled: true,
+        className: 'disabled'
+    } : {}
     return (
         <Grid item className='primary' style={{ height: '600px', width: '700px' }}>
             <Grid container direction='column' justifyContent='flex-end' height='100%' margin={0} padding={2} >
                 <Grid item alignSelf='center' marginBottom='auto' marginTop='auto'>
-                    <Grid container spacing={4} justifyContent='center' height='auto' alignItems='center' direction='column'>
+                    <Grid container spacing={5} justifyContent='center' height='auto' alignItems='center' direction='column'>
                         <Grid item>
                             <AppLogo style={{ width: '400px', height: 'auto' }} />
                         </Grid>
@@ -47,7 +70,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                             <Grid container direction='column'>
                                 <Grid item>
                                     <TextField
-                                    variant='outlined'
+                                        variant='outlined'
                                         margin="dense"
                                         label='EMAIL'
                                         type='text'
@@ -73,7 +96,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                             </Grid>
                         </Grid>
                         <Grid item>
-                            <Button onClick={() => navigate('/app/home')} color='primary' variant='contained' size='medium' autoFocus={false}>
+                            <Button { ...loginDisableProps } onClick={handleLogin} color='primary' variant='contained' size='medium' autoFocus={false}>
                                 <span className='b f4'>SIGN IN</span>
                             </Button>
                         </Grid>
