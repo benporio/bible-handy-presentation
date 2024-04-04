@@ -1,17 +1,39 @@
-import React from 'react'
+import React, { ChangeEventHandler } from 'react'
 import { Button, Grid, TextField } from '@mui/material';
 import { AppLogo } from '../../../asset/asset';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router';
+import { ReturnProps, useValidatingInput } from '../../../hooks/useValidatingInput';
 
 interface LoginFormProps { 
     setAuthMethod: React.Dispatch<React.SetStateAction<string>>
 }
 
+type LoginFormInputProps = {
+    error: boolean
+    helperText: string
+    onChange: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>
+}
+
 export const LoginForm: React.FC<LoginFormProps> = ({
     setAuthMethod
 }) => {
+    const validationOpt = { 
+        parseReturnProps<LoginFormInputProps>({isError, helperText, handleChange}: ReturnProps): LoginFormInputProps {
+            return {
+                error: isError,
+                helperText: helperText,
+                onChange: handleChange,
+            } as LoginFormInputProps
+        }
+    } 
+    const emailProps: LoginFormInputProps = useValidatingInput<LoginFormInputProps>(
+        { initialValue: '',  defaultErrorHelperText: 'Invalid Email' }, validationOpt
+    ) as LoginFormInputProps
+    const passwordProps: LoginFormInputProps = useValidatingInput<LoginFormInputProps>(
+        { initialValue: '',  defaultErrorHelperText: 'Invalid Password' }, validationOpt
+    ) as LoginFormInputProps
     const navigate = useNavigate();
     return (
         <Grid item className='primary' style={{ height: '600px', width: '700px' }}>
@@ -27,12 +49,13 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                                     <TextField
                                     variant='outlined'
                                         margin="dense"
-                                        label='USERNAME'
+                                        label='EMAIL'
                                         type='text'
                                         color='primary'
                                         inputProps={{
                                             style: { height: '100%' }
                                         }}
+                                        { ...emailProps }
                                     />
                                 </Grid>
                                 <Grid item>
@@ -44,6 +67,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                                         inputProps={{
                                             style: { height: '100%' }
                                         }}
+                                        { ...passwordProps }
                                     />
                                 </Grid>
                             </Grid>
