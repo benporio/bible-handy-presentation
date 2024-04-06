@@ -12,17 +12,22 @@ interface RegisterFormProps {
     setAuthMethod: React.Dispatch<React.SetStateAction<string>>
 }
 
-type RegisterFormInputProps = {
-    value: string
+type InputProps = {
     error: boolean
     helperText: string
     onChange: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>
 }
 
+type RegisterFormInputProps = {
+    value: string
+} & InputProps
+
 export const RegisterForm: React.FC<RegisterFormProps> = ({
     setAuthMethod
 }) => {
-
+    const parseInputProps = ({error, helperText, onChange}: RegisterFormInputProps): InputProps => {
+        return {error, helperText, onChange}
+    }
     const dispatch = appDispatch()
     const validationOpt = { 
         parseReturnProps<LoginFormInputProps>({value, isError, helperText, handleChange}: ReturnProps): LoginFormInputProps {
@@ -123,7 +128,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                                         inputProps={{
                                             style: { height: '100%' }
                                         }}
-                                        { ...firstNameProps }
+                                        { ...parseInputProps(firstNameProps) }
                                     />
                                 </Grid>
                                 <Grid item xs={6}>
@@ -136,7 +141,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                                         inputProps={{
                                             style: { height: '100%' }
                                         }}
-                                        { ...lastNameProps }
+                                        { ...parseInputProps(lastNameProps) }
                                     />
                                 </Grid>
                                 <Grid item xs={5}>
@@ -149,7 +154,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                                         inputProps={{
                                             style: { height: '100%' }
                                         }}
-                                        { ...userNameProps }
+                                        { ...parseInputProps(userNameProps) }
                                     />
                                 </Grid>
                                 <Grid item xs={8}>
@@ -162,7 +167,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                                         inputProps={{
                                             style: { height: '100%' }
                                         }}
-                                        { ...emailProps }
+                                        { ...parseInputProps(emailProps) }
                                     />
                                 </Grid>
                                 <Grid item xs={6}>
@@ -177,7 +182,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                                                 height: '100%', 
                                             }
                                         }}
-                                        { ...passwordProps }
+                                        { ...parseInputProps(passwordProps) }
                                     />
                                 </Grid>
                                 <Grid item xs={6}>
@@ -190,7 +195,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                                         inputProps={{
                                             style: { height: '100%' }
                                         }}
-                                        { ...confirmPasswordProps }
+                                        { ...parseInputProps(confirmPasswordProps) }
                                     />
                                 </Grid>
                             </Grid>

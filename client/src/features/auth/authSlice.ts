@@ -44,6 +44,9 @@ const authSlice = createSlice({
         },
         login(state, action: PayloadAction) {
 
+        },
+        logout: (state) => {
+            return initialState
         }
     },
     extraReducers: (builder) => {
@@ -56,6 +59,23 @@ const authSlice = createSlice({
             state.isRegistering = false;
         })
         builder.addCase(registerUser.rejected, (state, action) => {
+            // if (action.payload) {
+            //     // Since we passed in `MyKnownError` to `rejectValue` in `updateUser`, the type information will be available here.
+            //     state.error = action.payload.errorMessage
+            // } else {
+            //     state.error = action.error
+            // }
+            state.error = action.error
+        })
+        builder.addCase(loginUser.pending, (state) => {
+            state.isRegistering = true;
+        })
+        builder.addCase(loginUser.fulfilled, (state, { payload }) => {
+            state.userData = payload
+            state.isLoggedIn = true;
+            state.isRegistering = false;
+        })
+        builder.addCase(loginUser.rejected, (state, action) => {
             // if (action.payload) {
             //     // Since we passed in `MyKnownError` to `rejectValue` in `updateUser`, the type information will be available here.
             //     state.error = action.payload.errorMessage
@@ -78,7 +98,7 @@ export const registerUser = createAsyncThunk<UserData,User>('auth/register', asy
     //     // Return the known error for future handling
     //     return thunkApi.rejectWithValue((await response.json()) as MyKnownError)
     // }
-    return (await response.json()) as User
+    return (await response.json()).data as UserData
 })
 
 export const loginUser = createAsyncThunk<UserData,LoginInfo>('auth/login', async (loginInfo: LoginInfo) => {
@@ -87,11 +107,15 @@ export const loginUser = createAsyncThunk<UserData,LoginInfo>('auth/login', asyn
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(loginInfo)
     })
-    // if (response.status === 400) {
-    //     // Return the known error for future handling
-    //     return thunkApi.rejectWithValue((await response.json()) as MyKnownError)
-    // }
-    return (await response.json()) as User
+    if (response.status === 401) {
+        // Return the known error for future handling
+        // return thunkApi.rejectWithValue((await response.json()) as MyKnownError)
+    }
+    return (await response.json()).data as UserData
 })
+
+export const {
+    logout
+} = authSlice.actions
 
 export default authSlice.reducer

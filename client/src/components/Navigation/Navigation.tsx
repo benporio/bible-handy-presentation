@@ -3,6 +3,8 @@ import React from 'react';
 import { AnonymousProfilePic, AppLogo } from '../../asset/asset';
 import { PageComponent } from '../../app/pages';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { logout } from '../../features/auth/authSlice';
+import { appDispatch } from '../../app/hooks';
 
 interface NavigationProps { 
     items: PageComponent[]
@@ -11,6 +13,7 @@ interface NavigationProps {
 export const Navigation: React.FC<NavigationProps> = ({
     items
 }) => {
+    const dispatch = appDispatch()
     const navigate = useNavigate();
     const location = useLocation();
     return (
@@ -24,7 +27,7 @@ export const Navigation: React.FC<NavigationProps> = ({
                         <Grid container justifyContent={'space-between'} columnSpacing={10} alignItems={'center'}>
                             {items.map(page => {
                                 return (
-                                    <Grid item paddingX={2}>
+                                    <Grid key={page.id} item paddingX={2}>
                                     {location.pathname.includes(page.route) ?
                                         <>
                                             <span style={{ color: '#0094FF', fontWeight: 'bold' }}>{page.label}</span>
@@ -49,7 +52,7 @@ export const Navigation: React.FC<NavigationProps> = ({
                                 </Grid>
                             </Grid>
                             <Grid item paddingX={2}>
-                                <span onClick={() => navigate('/auth')} style={{ cursor: 'pointer' }}>Logout</span>
+                                <span onClick={() => dispatch(logout())} style={{ cursor: 'pointer' }}>Logout</span>
                             </Grid>
                         </Grid>
                     </Grid>

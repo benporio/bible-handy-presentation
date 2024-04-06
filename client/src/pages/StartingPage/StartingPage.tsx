@@ -3,14 +3,20 @@ import React, { useEffect } from 'react';
 import { Navigation } from '../../components/Navigation/Navigation';
 import { Outlet, useNavigate } from 'react-router';
 import { PageComponent, Pages } from '../../app/pages';
+import { useAppSelector } from '../../app/hooks';
 
 interface StartingPageProps { }
 
 export const StartingPage: React.FC<StartingPageProps> = () => {
+    const auth = useAppSelector((state) => state.auth);
     const navigate = useNavigate();
     useEffect(() => {
-        navigate('/app/home');
-    }, [])
+        if (auth.isLoggedIn) {
+            navigate('/app/home');
+        } else {
+            navigate('/auth');
+        }
+    }, [auth])
     return (
         <Grid container direction={'column'}>
             <Grid item style={{

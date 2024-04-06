@@ -5,11 +5,7 @@ import App from './containers/App';
 import reportWebVitals from './reportWebVitals';
 import 'tachyons';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { CssBaseline } from '@mui/material';
-import { ThemeProvider } from "@mui/material/styles";
-import { commonTheme } from './themes/commonTheme';
 import { Pages } from './app/pages';
-import { StartingPage } from './pages/StartingPage/StartingPage';
 import { Provider } from 'react-redux';
 import { store } from './app/store'
 
@@ -20,22 +16,24 @@ const root = ReactDOM.createRoot(
 root.render(
     <React.StrictMode>
         <Provider store={store}>
-            <ThemeProvider theme={commonTheme}>
-                <CssBaseline />
-                    <BrowserRouter>
-                        <Routes>
-                            <Route path="/" element={<App />} >
-                            {Pages.filter(item => item.context === 'app').map(item => <Route key={item.id} path={item.route} element={item.page} />)}
-                            </Route>
-                        </Routes>
-                        <Routes>
-                            <Route path="/app" element={<StartingPage />} >
-                            {Pages.filter(item => item.label === 'App')[0]
-                                .subPages?.map(item => <Route  key={item.id} path={item.route} element={item.page} />)}
-                            </Route>
-                        </Routes>
-                    </BrowserRouter>
-            </ThemeProvider>
+            <BrowserRouter>
+                <Routes>
+                    <Route path="/" element={<App />} >
+                        {Pages.map(page => {
+                            if (!!page.subPages && !!page.subPages.length) {
+                                return (
+                                    <Route key={page.id} path={page.route} element={page.page}>
+                                        {page.subPages.map(subPage => {
+                                            return <Route key={subPage.id} path={subPage.route} element={subPage.page} />
+                                        })}
+                                    </Route>
+                                )
+                            } 
+                            return <Route key={page.id} path={page.route} element={page.page} />
+                        })}
+                    </Route>
+                </Routes>
+            </BrowserRouter>
         </Provider>
     </React.StrictMode>
 );

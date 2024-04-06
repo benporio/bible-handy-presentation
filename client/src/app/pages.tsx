@@ -17,14 +17,14 @@ export const Pages: PageComponent[] = [
     {
         id: 0,
         label: 'Authentication',
-        route: '/auth',
+        route: 'auth',
         page: <Authentication />,
         context: 'app',
     },
     {
         id: 1,
         label: 'App',
-        route: '/app',
+        route: 'app',
         page: <StartingPage />,
         context: 'app',
         subPages : [
