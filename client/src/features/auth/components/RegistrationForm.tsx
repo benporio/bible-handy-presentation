@@ -12,21 +12,18 @@ interface RegisterFormProps {
     setAuthMethod: React.Dispatch<React.SetStateAction<string>>
 }
 
-type InputProps = {
+type RegisterFormInputProps = {
+    value: string
     error: boolean
     helperText: string
     onChange: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>
 }
 
-type RegisterFormInputProps = {
-    value: string
-} & InputProps
-
 export const RegisterForm: React.FC<RegisterFormProps> = ({
     setAuthMethod
 }) => {
-    const parseInputProps = ({error, helperText, onChange}: RegisterFormInputProps): InputProps => {
-        return {error, helperText, onChange}
+    const parseInputProps = ({value, error, helperText, onChange}: RegisterFormInputProps): RegisterFormInputProps => {
+        return {value, error, helperText, onChange}
     }
     const dispatch = appDispatch()
     const validationOpt = { 
@@ -63,7 +60,9 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         { initialValue: '',  defaultErrorHelperText: 'Invalid Password' }, 
         { 
             ...validationOpt, 
-            changeCallback: () => confirmPasswordProps.setValue(''),
+            changeCallback: () => {
+                confirmPasswordProps.setValue('')
+            },
         }
     ) as RegisterFormInputProps
     type confirmPasswordReturnProps = RegisterFormInputProps & { setValue: React.Dispatch<React.SetStateAction<string>> }

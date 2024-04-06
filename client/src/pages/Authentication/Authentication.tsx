@@ -12,7 +12,6 @@ export const Authentication: React.FC<AuthenticationProps> = () => {
     
     const navigate = useNavigate();
     useEffect(() => {
-        console.log(auth)
         if (auth.isLoggedIn) {
             navigate('/app');
         }
