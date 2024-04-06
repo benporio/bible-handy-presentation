@@ -4,6 +4,7 @@ import { Box, CssBaseline } from '@mui/material';
 import { ThemeProvider } from "@mui/material/styles";
 import { commonTheme } from '../themes/commonTheme';
 import { Outlet, useNavigate } from 'react-router';
+import { AlertProvider } from '../contexts/AlertContext';
 
 const App: React.FC = () => {
     const navigate = useNavigate();
@@ -13,9 +14,11 @@ const App: React.FC = () => {
     return (
         <ThemeProvider theme={commonTheme}>
             <CssBaseline />
-            <Box>
-                <Outlet />
-            </Box>
+            <AlertProvider>
+                <Box>
+                    <Outlet />
+                </Box>
+            </AlertProvider>
         </ThemeProvider>
     );
  }

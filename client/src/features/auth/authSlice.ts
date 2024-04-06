@@ -1,4 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { ApiResponse } from '../../types/Response'
+import { ApiError } from '../../types/Error'
 
 export type LoginInfo = {
     email: string
@@ -17,8 +19,7 @@ type AuthState = {
     isLoggedIn: boolean
     isLoggingIn: boolean
     userData: UserData
-    error: any
-    isLoggingError: boolean
+    error: ApiError | null
     isRegistering: boolean
 }
 
@@ -31,7 +32,6 @@ const initialState: AuthState = {
         userName: '',
     },
     error: null,
-    isLoggingError: false,
     isRegistering: false
 }
 
@@ -39,15 +39,15 @@ const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
+        reset: (state) => {
+            return initialState
+        },
         register(state, action: PayloadAction<boolean>) {
 
         },
         login(state, action: PayloadAction) {
 
         },
-        logout: (state) => {
-            return initialState
-        }
     },
     extraReducers: (builder) => {
         builder.addCase(registerUser.pending, (state) => {
@@ -58,63 +58,57 @@ const authSlice = createSlice({
             state.isLoggedIn = true;
             state.isRegistering = false;
         })
-        builder.addCase(registerUser.rejected, (state, action) => {
-            // if (action.payload) {
-            //     // Since we passed in `MyKnownError` to `rejectValue` in `updateUser`, the type information will be available here.
-            //     state.error = action.payload.errorMessage
-            // } else {
-            //     state.error = action.error
-            // }
-            state.error = action.error
+        builder.addCase(registerUser.rejected, (state, { payload }) => {
+            const error = payload as ApiError
+            if (!!error) {
+                state.error = error
+            }
         })
         builder.addCase(loginUser.pending, (state) => {
-            state.isRegistering = true;
+            state.isLoggingIn = true;
         })
         builder.addCase(loginUser.fulfilled, (state, { payload }) => {
             state.userData = payload
             state.isLoggedIn = true;
-            state.isRegistering = false;
+            state.isLoggingIn = false;
         })
-        builder.addCase(loginUser.rejected, (state, action) => {
-            // if (action.payload) {
-            //     // Since we passed in `MyKnownError` to `rejectValue` in `updateUser`, the type information will be available here.
-            //     state.error = action.payload.errorMessage
-            // } else {
-            //     state.error = action.error
-            // }
-            state.error = action.error
+        builder.addCase(loginUser.rejected, (state, { payload }) => {
+            const error = payload as ApiError
+            if (!!error) {
+                state.error = error
+            }
         })
     },
 })
 
-export const registerUser = createAsyncThunk<UserData,User>('auth/register', async (signUpUser: User) => {
+export const registerUser = createAsyncThunk<UserData,User>('auth/register', async (signUpUser: User, { rejectWithValue }) => {
     const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/register`, { 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(signUpUser)
     })
-    // if (response.status === 400) {
-    //     // Return the known error for future handling
-    //     return thunkApi.rejectWithValue((await response.json()) as MyKnownError)
-    // }
-    return (await response.json()).data as UserData
+    const apiResponse: ApiResponse = (await response.json()) as ApiResponse
+    if (apiResponse.statusCode === 400) {
+        return rejectWithValue(apiResponse)
+    }
+    return apiResponse.data as UserData
 })
 
-export const loginUser = createAsyncThunk<UserData,LoginInfo>('auth/login', async (loginInfo: LoginInfo) => {
+export const loginUser = createAsyncThunk<UserData,LoginInfo>('auth/login', async (loginInfo: LoginInfo, { rejectWithValue }) => {
     const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/login`, { 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(loginInfo)
     })
-    if (response.status === 401) {
-        // Return the known error for future handling
-        // return thunkApi.rejectWithValue((await response.json()) as MyKnownError)
+    const apiResponse: ApiResponse = (await response.json()) as ApiResponse
+    if (apiResponse.statusCode === 401) {
+        return rejectWithValue(apiResponse)
     }
-    return (await response.json()).data as UserData
+    return apiResponse.data as UserData
 })
 
 export const {
-    logout
+    reset,
 } = authSlice.actions
 
 export default authSlice.reducer

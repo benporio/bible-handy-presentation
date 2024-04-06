@@ -2,8 +2,8 @@ import React, { ChangeEventHandler } from 'react'
 import { Button, Grid, TextField } from '@mui/material';
 import { AppLogo } from '../../../asset/asset';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleChevronLeft } from '@fortawesome/free-solid-svg-icons';
-import { appDispatch } from '../../../app/hooks';
+import { faCircleChevronLeft, faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { appDispatch, useAppSelector } from '../../../app/hooks';
 import { User, registerUser } from '../authSlice';
 import { ReturnProps, useValidatingInput } from '../../../hooks/useValidatingInput';
 import StringUtil from '../../../utils/StringUtil';
@@ -22,6 +22,7 @@ type RegisterFormInputProps = {
 export const RegisterForm: React.FC<RegisterFormProps> = ({
     setAuthMethod
 }) => {
+    const { isRegistering } = useAppSelector((state) => state.auth);
     const parseInputProps = ({value, error, helperText, onChange}: RegisterFormInputProps): RegisterFormInputProps => {
         return {value, error, helperText, onChange}
     }
@@ -53,7 +54,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         { initialValue: '',  defaultErrorHelperText: 'Invalid Email' }, 
         { 
             ...validationOpt, 
-            validation: (value: string) => StringUtil.isValidString(value, new RegExp(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/)),
+            validation: (value: string) => StringUtil.isEmailValid(value),
         }
     ) as RegisterFormInputProps
     const passwordProps: RegisterFormInputProps = useValidatingInput<RegisterFormInputProps>(
@@ -202,7 +203,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                         <Grid item>
                             <Button { ...registerDisableProps } onClick={handleRegister} 
                                 color='secondary' variant='contained' size='medium' autoFocus={false}>
-                                <span className='b f4'>SIGN UP</span>
+                                <span className='b f4'>{isRegistering ? <FontAwesomeIcon icon={faSpinner} spin />  : 'SIGN UP'}</span>
                             </Button>
                         </Grid>
                     </Grid>

@@ -2,17 +2,35 @@ import { HydratedUserDoc, ILoginInfo, IUser, IUserInfo, UserFactory } from "../m
 import { ServiceResult } from "../types/ActionResult";
 import Logger from "../utils/Logger";
 import PromiseUtil from '../utils/PromiseUtil'
+import TimeUtil from '../utils/TimeUtil'
 import bcrypt from 'bcrypt'
 
 class AuthService {
     public async register(user: IUser): Promise<ServiceResult> {
         const result: ServiceResult = { status: 'error' }
-        const { email } = user;
-        const existingUser = await UserFactory.findOne({ email });
-        if (existingUser!==null) return new Promise(resolve => resolve({
+        const { email, userName } = user;
+        const existingUsers = await UserFactory.find({ $or: [{ email }, { userName }] });
+        if (!!existingUsers && !!existingUsers.length) return new Promise(resolve => resolve({
             ...result,
             status: 'error',
-            message: 'Email already in used'
+            message: existingUsers.map(user => {
+                if (user.email === email) {
+                    return {
+                        type: 'error',
+                        message: 'Email already in used'
+                    }
+                }
+                if (user.userName === userName) {
+                    return {
+                        type: 'error',
+                        message: 'User name already in used'
+                    }
+                }
+                return {
+                    type: 'error',
+                    message: 'Conflict with another user',
+                }
+            })
         }));
         const newUser: HydratedUserDoc = UserFactory.createUser(user);
         return await PromiseUtil.createPromise<ServiceResult>((resolve, reject) => {

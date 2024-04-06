@@ -3,7 +3,7 @@ import HttpStatusCode from "../../constants/httpStatusCode"
 export type ServiceMessage = {
     type: 'info' | 'warning' | 'error'
     message: string
-    details: any
+    details?: any
 }
 
 export type ServiceResult = {

@@ -2,8 +2,8 @@ import React, { ChangeEventHandler } from 'react'
 import { Button, Grid, TextField } from '@mui/material';
 import { AppLogo } from '../../../asset/asset';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleChevronRight } from '@fortawesome/free-solid-svg-icons';
-import { appDispatch } from '../../../app/hooks';
+import { faCircleChevronRight, faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { appDispatch, useAppSelector } from '../../../app/hooks';
 import { loginUser } from '../authSlice';
 import { ReturnProps, useValidatingInput } from '../../../hooks/useValidatingInput';
 import StringUtil from '../../../utils/StringUtil';
@@ -22,6 +22,7 @@ type LoginFormInputProps = {
 export const LoginForm: React.FC<LoginFormProps> = ({
     setAuthMethod
 }) => {
+    const { isLoggingIn } = useAppSelector((state) => state.auth);
     const dispatch = appDispatch()
     const validationOpt = { 
         parseReturnProps<LoginFormInputProps>({value, isError, helperText, handleChange}: ReturnProps): LoginFormInputProps {
@@ -37,7 +38,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
         { initialValue: '',  defaultErrorHelperText: 'Invalid Email' }, 
         { 
             ...validationOpt, 
-            validation: (value: string) => StringUtil.isValidString(value, new RegExp(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/)),
+            validation: (value: string) => StringUtil.isEmailValid(value),
         }
     ) as LoginFormInputProps
     const passwordProps: LoginFormInputProps = useValidatingInput<LoginFormInputProps>(
@@ -97,7 +98,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                         </Grid>
                         <Grid item>
                             <Button { ...loginDisableProps } onClick={handleLogin} color='primary' variant='contained' size='medium' autoFocus={false}>
-                                <span className='b f4'>SIGN IN</span>
+                                <span className='b f4'>{isLoggingIn ? <FontAwesomeIcon icon={faSpinner} spin />  : 'SIGN IN'}</span>
                             </Button>
                         </Grid>
                     </Grid>

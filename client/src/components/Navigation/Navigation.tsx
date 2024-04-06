@@ -3,7 +3,7 @@ import React from 'react';
 import { AnonymousProfilePic, AppLogo } from '../../asset/asset';
 import { PageComponent } from '../../app/pages';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { logout } from '../../features/auth/authSlice';
+import { reset } from '../../features/auth/authSlice';
 import { appDispatch, useAppSelector } from '../../app/hooks';
 
 interface NavigationProps { 
@@ -53,7 +53,7 @@ export const Navigation: React.FC<NavigationProps> = ({
                                 </Grid>
                             </Grid>
                             <Grid item paddingX={2}>
-                                <span onClick={() => dispatch(logout())} style={{ cursor: 'pointer' }}>Logout</span>
+                                <span onClick={() => dispatch(reset())} style={{ cursor: 'pointer' }}>Logout</span>
                             </Grid>
                         </Grid>
                     </Grid>
