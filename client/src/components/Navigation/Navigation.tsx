@@ -4,7 +4,7 @@ import { AnonymousProfilePic, AppLogo } from '../../asset/asset';
 import { PageComponent } from '../../app/pages';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { logout } from '../../features/auth/authSlice';
-import { appDispatch } from '../../app/hooks';
+import { appDispatch, useAppSelector } from '../../app/hooks';
 
 interface NavigationProps { 
     items: PageComponent[]
@@ -13,6 +13,7 @@ interface NavigationProps {
 export const Navigation: React.FC<NavigationProps> = ({
     items
 }) => {
+    const userData = useAppSelector((state) => state.auth.userData);
     const dispatch = appDispatch()
     const navigate = useNavigate();
     const location = useLocation();
@@ -48,7 +49,7 @@ export const Navigation: React.FC<NavigationProps> = ({
                                     <Grid item paddingX={2}>
                                         <AnonymousProfilePic style={{ width: '40px', height: 'auto' }} />
                                     </Grid>
-                                    <Grid item paddingX={2}>username</Grid>
+                                    <Grid item paddingX={2}>{userData.userName}</Grid>
                                 </Grid>
                             </Grid>
                             <Grid item paddingX={2}>
