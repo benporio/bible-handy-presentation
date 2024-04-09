@@ -2,9 +2,9 @@ import HttpStatusCode from "../../constants/httpStatusCode";
 import { ILoginInfo, IUser } from "../models/User";
 import AuthService from "../services/AuthService";
 import { ServiceResult, HttpResponseData, HttpResponseInfo } from "../types/ActionResult";
-import AbsController from './AbsContoller'
+import Controller from './AbsContoller'
 
-class AuthController extends AbsController {
+class AuthController extends Controller {
     public async register(requestBody: any): Promise<HttpResponseData> {
         return this.adapter(
             async () => AuthService.register(requestBody as IUser),
@@ -26,6 +26,18 @@ class AuthController extends AbsController {
                     return {
                         statusCode: actionResult.status === 'success' ? 
                             HttpStatusCode.OK_200 : HttpStatusCode.UNAUTHORIZED_401,
+                    }
+                }
+            }
+        );
+    }
+    public async validate(requestParam: any): Promise<HttpResponseData> {
+        return this.adapter(
+            async () => AuthService.validateIdentifier(requestParam as ILoginInfo),
+            {
+                actionResultPostInfo: (actionResult: ServiceResult): HttpResponseInfo => {
+                    return {
+                        statusCode: HttpStatusCode.OK_200,
                     }
                 }
             }

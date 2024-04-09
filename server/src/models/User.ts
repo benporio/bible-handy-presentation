@@ -2,6 +2,10 @@ import { model, Schema, Model, Document, HydratedDocument, CallbackWithoutResult
 import bcrypt from 'bcrypt'
 import { HydratedLogDoc, ILog, LogFactory, logSchema } from './Log'
 
+export type UserIdentifier = {
+    email?: string
+    userName?: string
+}
 export interface ILoginInfo {
     email: string
     password: string

@@ -1,6 +1,11 @@
 import request from 'supertest';
 import app from '../src/configs/app';
 import HttpStatusCode from '../constants/httpStatusCode';
+import mongoose from 'mongoose';
+
+afterAll(async () => {
+    await mongoose.connection.close();
+});
 
 describe("GET /", () => {
     it('responds with "BHP App is running"', async () => {

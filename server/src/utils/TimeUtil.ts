@@ -1,6 +1,10 @@
 class TimeUtil {
-    public timeout(ms: number): Promise<void> {
-        return new Promise(resolve => setTimeout(resolve, ms));
+    public timeout(ms: number): Promise<NodeJS.Timeout> {
+        return new Promise(resolve => {
+            const timeOut = setTimeout(() => {
+                resolve(timeOut)
+            }, ms)
+        });
     }
 }
 

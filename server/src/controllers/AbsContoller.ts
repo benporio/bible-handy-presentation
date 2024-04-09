@@ -6,10 +6,16 @@ type AdapterOptions = {
     actionResultPostInfo?: (actionResult: ServiceResult) => HttpResponseInfo 
 }
 
-export default class AbsController {
+const defaultAdapterOptions = {
+    actionResultPostInfo: (actionResult: ServiceResult) => {
+        return { statusCode: actionResult.status === 'success' ? HttpStatusCode.OK_200 : HttpStatusCode.BAD_REQUEST_400 }
+    }
+}
+
+export default class Controller {
     protected async adapter(
         serviceMethod: () => Promise<ServiceResult>, 
-        options?: AdapterOptions
+        { actionResultPostInfo = defaultAdapterOptions.actionResultPostInfo }: AdapterOptions
     ): Promise<HttpResponseData> {
         try {
             const actionResult: ServiceResult = await serviceMethod()
@@ -17,8 +23,7 @@ export default class AbsController {
                     throw e
                 });
             const responseData: HttpResponseData = {
-                ...((options?.actionResultPostInfo && options?.actionResultPostInfo(actionResult)) 
-                    || { statusCode: actionResult.status === 'success' ? HttpStatusCode.OK_200 : HttpStatusCode.BAD_REQUEST_400 }),
+                ...(actionResultPostInfo(actionResult)),
                 ...actionResult,
             }
             Logger.debug(responseData);
