@@ -1,6 +1,6 @@
 import { useState, ChangeEvent, ChangeEventHandler, useEffect } from 'react';
 import { appDispatch } from '../app/hooks';
-import { InputState, updateRegistrationForm } from '../features/auth/authSlice';
+import { InputState } from '../features/auth/authSlice';
 
 export type DebounceValdationType = {
     validationCall: (value: string) => void
