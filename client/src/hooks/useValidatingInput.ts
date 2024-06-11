@@ -1,32 +1,43 @@
-import { useState, ChangeEvent, ChangeEventHandler } from 'react';
+import { useState, ChangeEvent, ChangeEventHandler, useEffect } from 'react';
+import { appDispatch } from '../app/hooks';
+import { InputState, updateRegistrationForm } from '../features/auth/authSlice';
+
+export type DebounceValdationType = {
+    validationCall: (value: string) => void
+    delay: number
+}
 
 const defaultProps = {
-    initialValue: '',
     defaultErrorHelperText: 'Invalid value',
     noErrorHelperText: ' ',
     validation: (value: string) => !!value, 
     parseReturnProps: (returnProps: ReturnProps) => returnProps,
     successCallback: () => null,
     failedCallback: () => null,
-    changeCallback: () => null,
+    changeCallback: (value?: string, field?: string, isError?: boolean) => null,
 }
 
 type InputOptions = {
-    initialValue?: string
+    inputState: InputState
     defaultErrorHelperText?: string
+    updateFormState: <T>(payload: T) => {
+        payload: T;
+        type: string;
+    }
 }
 
-type ValidationOptions = {
+export type ValidationOptions = {
+    field?: string
     validation?: (value: string) => boolean
     parseReturnProps?: <T>(returnProps: ReturnProps) => T
     successCallback?: () => void
     failedCallback?: () => void
-    changeCallback?: () => void
+    changeCallback?: (value?: string, field?: string, isError?: boolean) => void
 }
 
 export type ReturnProps = {
-    value: string
-    setValue: React.Dispatch<React.SetStateAction<string>>
+    formInputState: InputState
+    setFormInputState: React.Dispatch<React.SetStateAction<InputState>>
     isError: boolean
     helperText: string
     handleChange: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>
@@ -34,37 +45,55 @@ export type ReturnProps = {
 
 export function useValidatingInput<T>(inputOpt: InputOptions, validateOpt? : ValidationOptions): ReturnProps | T {
     const { 
-        initialValue = defaultProps.initialValue, 
-        defaultErrorHelperText = defaultProps.defaultErrorHelperText
+        inputState, 
+        defaultErrorHelperText = defaultProps.defaultErrorHelperText,
+        updateFormState,
     } = inputOpt as InputOptions;
     const { 
+        field,
         validation = defaultProps.validation, 
         parseReturnProps = defaultProps.parseReturnProps,
         successCallback = defaultProps.successCallback,
         failedCallback = defaultProps.failedCallback,
         changeCallback = defaultProps.changeCallback,
     } = validateOpt as ValidationOptions;
-    const [value, setValue] = useState(initialValue);
+    const [formInputState, setFormInputState] = useState(inputState);
     const [isError, setError] = useState<boolean>(false);
     const [errorHelperText, setErrorHelperText] = useState(defaultProps.noErrorHelperText);
+
+    useEffect(() => {
+        if (inputState.isValid !== undefined) {
+            setError(!inputState.isValid)
+        }
+    }, [inputState])
+
+    const dispatch = appDispatch()
+
+    const validatingFunc = (bool: boolean) => {
+        setError(!bool)
+        if (bool) {
+            setErrorHelperText(defaultProps.noErrorHelperText)
+            successCallback()
+        } else {
+            setErrorHelperText(defaultErrorHelperText)
+            failedCallback()
+        }
+    }
     const returnProps: ReturnProps = {
-        value,
-        setValue,
+        formInputState,
+        setFormInputState,
         isError,
         helperText: errorHelperText,
         handleChange: function(e: ChangeEvent<HTMLInputElement>) {
             const newValue: string = e.target.value
-            setValue(newValue);
-            if (validation(newValue)) {
-                setError(false)
-                setErrorHelperText(defaultProps.noErrorHelperText)
-                successCallback()
-            } else {
-                setError(true)
-                setErrorHelperText(defaultErrorHelperText)
-                failedCallback()
-            }
-            changeCallback()
+            const isValid: boolean = validation(newValue)
+            dispatch(updateFormState({
+                ...formInputState,
+                value: e.target.value,
+                isValid: isValid,
+            }));
+            validatingFunc(isValid)
+            changeCallback(newValue, field, isError)
         }
     }
     return parseReturnProps(returnProps)

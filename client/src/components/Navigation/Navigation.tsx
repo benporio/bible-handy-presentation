@@ -5,6 +5,7 @@ import { PageComponent } from '../../app/pages';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { reset } from '../../features/auth/authSlice';
 import { appDispatch, useAppSelector } from '../../app/hooks';
+import { NavigationItem } from '../NavigationItem/NavigationItem';
 
 interface NavigationProps { 
     items: PageComponent[]
@@ -29,14 +30,11 @@ export const Navigation: React.FC<NavigationProps> = ({
                             {items.map(page => {
                                 return (
                                     <Grid key={page.id} item paddingX={2}>
-                                    {location.pathname.includes(page.route) ?
-                                        <>
-                                            <span style={{ color: '#0094FF', fontWeight: 'bold' }}>{page.label}</span>
-                                            <div style={{ borderRadius: 5, boxShadow: '0 0 5px 0px #0094FF', width: '100%', border: '1px solid #0094FF' }}/>
-                                        </>
-                                    : 
-                                        <span onClick={() => navigate(page.route)} style={{ cursor: 'pointer' }}>{page.label}</span>
-                                    }
+                                        <NavigationItem 
+                                            selected={location.pathname.includes(page.route)} 
+                                            label={page.label} 
+                                            onClick={() => navigate(page.route)}
+                                        />
                                     </Grid>
                                 );
                             })}

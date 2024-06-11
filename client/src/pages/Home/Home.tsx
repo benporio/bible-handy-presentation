@@ -1,11 +1,15 @@
 import { Container, Grid, TextField } from '@mui/material';
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 
 interface HomeProps { }
 
 export const Home: React.FC<HomeProps> = () => {
     return (
         <Container style={{ width: '70%' }}>
+            <Helmet>
+                <title>BHP | Home</title>
+            </Helmet>
             <Grid container rowGap={3} justifyContent={'center'} alignItems={'center'} direction={'row'}>
                 <Grid item xs={12} style={{  width: '100%' }}>
                     <Grid container columnSpacing={3} alignItems={'center'}>

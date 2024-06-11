@@ -7,6 +7,10 @@ import { auth } from '../routes/auth';
 import mongoose from 'mongoose';
 import morganMiddleware from './morganMiddleware';
 import Logger from '../utils/Logger';
+import session from 'express-session';
+import Keycloak, { KeycloakConfig } from 'keycloak-connect';
+import * as redis from 'redis';
+import RedisStore from 'connect-redis';
 
 dotenv.config();
 
@@ -24,7 +28,31 @@ process.on('SIGINT', async () => {
     }
 });
 
+// Create Redis store
+// let redisClient = redis.createClient();
+
+// const kcConfig = {
+//     clientId: 'myclient',
+//     bearerOnly: true,
+//     serverUrl: `http://localhost:8080`,
+//     realm: 'myrealm',
+//     realmPublicKey: 'testonlypublickey'
+// } as unknown as KeycloakConfig;
+
+// let keycloak = new Keycloak({
+//     store: new RedisStore({ client: redisClient })
+// }, kcConfig);
+
 const app: Express = express();
+
+// app.use(session({
+//     secret: 'thisShouldBeLongAndSecret',
+//     resave: false,
+//     saveUninitialized: true,
+//     store: new RedisStore({ client: redisClient })
+// }));
+
+// app.use(keycloak.middleware());
 
 // middleware for parsing application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -36,7 +64,7 @@ app.use(morganMiddleware);
 
 if (process.env.MODE === 'PROD') {
     const CLIENT_BUILD_DIR: string = 'build';
-        
+    
     // This code makes sure that any request that does not matches a static file
     // in the build folder, will just serve index.html. Client side routing is
     // going to make sure that the correct content will be loaded.
@@ -50,7 +78,7 @@ if (process.env.MODE === 'PROD') {
             res.sendFile(path.join(__dirname, CLIENT_BUILD_DIR, 'index.html'));
         }
     });
-
+    
     // serve react app
     app.use(express.static(path.join(__dirname, CLIENT_BUILD_DIR)));
 }

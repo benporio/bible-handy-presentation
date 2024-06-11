@@ -9,7 +9,7 @@ export type PageComponent = {
     label: string,
     route: string,
     page: JSX.Element,
-    context: 'app' | 'startingPage',
+    context: 'app' | 'auth' | 'startingPage',
     subPages?: PageComponent[]
 }
 
@@ -20,6 +20,22 @@ export const Pages: PageComponent[] = [
         route: 'auth',
         page: <Authentication />,
         context: 'app',
+        subPages : [
+            {
+                id: 0.1,
+                label: 'Login',
+                route: 'login',
+                page: <Authentication />,
+                context: 'auth',
+            },
+            {
+                id: 0.2,
+                label: 'Register',
+                route: 'register',
+                page: <Authentication />,
+                context: 'auth',
+            },
+        ]
     },
     {
         id: 1,
@@ -29,21 +45,21 @@ export const Pages: PageComponent[] = [
         context: 'app',
         subPages : [
             {
-                id: 1,
+                id: 1.1,
                 label: 'Home',
                 route: 'home',
                 page: <Home />,
                 context: 'startingPage',
             },
             {
-                id: 2,
+                id: 1.2,
                 label: 'Contact',
                 route: 'contact',
                 page: <Contact />,
                 context: 'startingPage',
             },
             {
-                id: 3,
+                id: 1.3,
                 label: 'About',
                 route: 'about',
                 page: <About />,

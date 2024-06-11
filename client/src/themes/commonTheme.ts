@@ -27,7 +27,7 @@ const PALETTE = {
         contrastText: '#0A141B',
     },
     success: {
-        main: '#9BCF53',
+        main: '#82CD47',
         light: '#BFEA7C',
         dark: '#416D19',
         contrastText: '#0A141B',
@@ -142,7 +142,7 @@ export const commonTheme = createTheme({
                 {
                     props: { className: 'success' },
                     style: {
-                        backgroundColor: PALETTE.success.light,
+                        backgroundColor: PALETTE.success.main,
                     },
                 },
                 {

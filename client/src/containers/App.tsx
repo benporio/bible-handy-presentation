@@ -5,6 +5,7 @@ import { ThemeProvider } from "@mui/material/styles";
 import { commonTheme } from '../themes/commonTheme';
 import { Outlet, useNavigate } from 'react-router';
 import { AlertProvider } from '../contexts/AlertContext';
+import { Helmet } from 'react-helmet-async';
 
 const App: React.FC = () => {
     const navigate = useNavigate();
@@ -13,6 +14,9 @@ const App: React.FC = () => {
     }, [])
     return (
         <ThemeProvider theme={commonTheme}>
+            <Helmet>
+                <title>Bible Handy Presentation</title>
+            </Helmet>
             <CssBaseline />
             <AlertProvider>
                 <Box>
