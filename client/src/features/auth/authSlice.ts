@@ -1,7 +1,7 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { ApiResponse } from '../../types/Response'
 import { ApiError } from '../../types/Error'
-import { loginUser as login } from '../../api/services/User'
+import { loginUser as login, registerUser as register } from '../../api/services/User'
 
 export type LoginInfo = {
     email: string
@@ -136,16 +136,11 @@ const authSlice = createSlice({
 })
 
 export const registerUser = createAsyncThunk<UserData,User>('auth/register', async (signUpUser: User, { rejectWithValue }) => {
-    const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/register`, { 
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(signUpUser)
-    })
-    const apiResponse: ApiResponse = (await response.json()) as ApiResponse
-    if (apiResponse.statusCode === 400) {
-        return rejectWithValue(apiResponse)
+    const response: ApiResponse = await register(signUpUser)
+    if (response.statusCode === 400) {
+        return rejectWithValue(response)
     }
-    return apiResponse.data as UserData
+    return response.data as UserData
 })
 
 export const loginUser = createAsyncThunk<UserData,LoginInfo>('auth/login', async (loginInfo: LoginInfo, { rejectWithValue }) => {
