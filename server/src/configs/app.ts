@@ -4,13 +4,18 @@ import path from 'path';
 import express, { Express, NextFunction, Request, Response } from 'express';
 import errorhandler from 'strong-error-handler';
 import { auth } from '../routes/auth';
+import { user } from '../routes/user';
 import mongoose from 'mongoose';
 import morganMiddleware from './morganMiddleware';
 import Logger from '../utils/Logger';
+import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import Keycloak, { KeycloakConfig } from 'keycloak-connect';
 import * as redis from 'redis';
 import RedisStore from 'connect-redis';
+import { v4 as uuidV4 } from 'uuid';
+import Endpoint from '../../constants/endpoint'
+import cors from 'cors'
 
 dotenv.config();
 
@@ -45,12 +50,11 @@ process.on('SIGINT', async () => {
 
 const app: Express = express();
 
-// app.use(session({
-//     secret: 'thisShouldBeLongAndSecret',
-//     resave: false,
-//     saveUninitialized: true,
-//     store: new RedisStore({ client: redisClient })
-// }));
+app.use(session({
+    secret: process.env.SESSION_SECRET || uuidV4(),
+    resave: false,
+    saveUninitialized: true,
+}));
 
 // app.use(keycloak.middleware());
 
@@ -59,6 +63,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // middleware for json body parsing
 app.use(bodyParser.json({ limit: '5mb' }));
+
+app.use(cookieParser());
 
 app.use(morganMiddleware);
 
@@ -81,15 +87,22 @@ if (process.env.MODE === 'PROD') {
     
     // serve react app
     app.use(express.static(path.join(__dirname, CLIENT_BUILD_DIR)));
+
+    app.use((req: Request, res: Response, next: NextFunction) => {
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Expose-Headers", "x-total-count");
+        res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,PATCH");
+        res.header("Access-Control-Allow-Headers", "Content-Type,authorization");
+        next();
+    });
+} else {
+    app.use(cors({
+        origin: 'http://localhost:3001',
+        credentials: true, // Allow credentials
+    }));
 }
 
-app.use((req: Request, res: Response, next: NextFunction) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Expose-Headers", "x-total-count");
-    res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,PATCH");
-    res.header("Access-Control-Allow-Headers", "Content-Type,authorization");
-    next();
-});
+
 
 app.get('/', (req: Request, res: Response) => {
     res.status(200).send('BHP App is running');
@@ -97,7 +110,8 @@ app.get('/', (req: Request, res: Response) => {
 
 export const apiV1BaseRoute: string = '/api/v1'
 
-app.use(`${apiV1BaseRoute}/auth`, auth);
+app.use(`${apiV1BaseRoute}${Endpoint.AUTH}`, auth);
+app.use(`${apiV1BaseRoute}${Endpoint.USER}`, user);
 
 app.use(errorhandler({
     debug: process.env.ENV !== 'prod',

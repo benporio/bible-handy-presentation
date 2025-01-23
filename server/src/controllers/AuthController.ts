@@ -43,6 +43,32 @@ class AuthController extends Controller {
             }
         );
     }
+    public async getUserData(userId: string, accessToken: string): Promise<HttpResponseData> {
+        return this.adapter(
+            async () => AuthService.getUserData(userId, accessToken),
+            {
+                actionResultPostInfo: (actionResult: ServiceResult): HttpResponseInfo => {
+                    return {
+                        statusCode: actionResult.status === 'success' ? 
+                            HttpStatusCode.OK_200 : HttpStatusCode.UNAUTHORIZED_401,
+                    }
+                }
+            }
+        );
+    }
+    public async logout(userId: string, refreshToken: string): Promise<HttpResponseData> {
+        return this.adapter(
+            async () => AuthService.logout(userId, refreshToken),
+            {
+                actionResultPostInfo: (actionResult: ServiceResult): HttpResponseInfo => {
+                    return {
+                        statusCode: actionResult.status === 'success' ? 
+                            HttpStatusCode.OK_200 : HttpStatusCode.UNAUTHORIZED_401,
+                    }
+                }
+            }
+        );
+    }
 }
 
 export default (new AuthController()) as AuthController;

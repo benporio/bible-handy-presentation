@@ -6,6 +6,7 @@ server/dist
 server/**/logs/
 server/node_modules
 server/.env
+server/test-*/
 info
 dev_script
 */coverage/

@@ -1,7 +1,7 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { ApiResponse } from '../../types/Response'
 import { ApiError } from '../../types/Error'
-import { loginUser as login, registerUser as register } from '../../api/services/User'
+import { login, register } from '../../api/services/Auth'
 
 export type LoginInfo = {
     email: string
@@ -28,7 +28,7 @@ type FormInfoState = {
     inputs: InputState[]
 }
 
-type AuthState = {
+export type AuthState = {
     isLoggedIn: boolean
     isLoggingIn: boolean
     userData: UserData
@@ -37,6 +37,9 @@ type AuthState = {
     authMethod: 'LOGIN' | 'REGISTER'
     registrationFormInfo: FormInfoState
     loginFormInfo: FormInfoState
+    isPageLoading: boolean
+    fromLoginPage: boolean
+    isLogout: boolean
 }
 
 const initialRegistrationState: FormInfoState = {
@@ -70,6 +73,9 @@ const initialState: AuthState = {
     authMethod: 'LOGIN',
     registrationFormInfo: initialRegistrationState,
     loginFormInfo: initialLoginState,
+    isPageLoading: true,
+    fromLoginPage: false,
+    isLogout: false,
 }
 
 const authSlice = createSlice({
@@ -84,6 +90,20 @@ const authSlice = createSlice({
         },
         signIn(state) {
             state.authMethod = 'LOGIN'
+        },
+        setPageLoading(state, action: PayloadAction<boolean>) {
+            state.isPageLoading = action.payload
+        },
+        setFromLoginPage(state, action: PayloadAction<boolean>) {
+            state.fromLoginPage = action.payload
+        },
+        logoutUser(state) {
+            state.isLogout = true
+        },
+        authorized(state, action: PayloadAction<UserData>) {
+            state.userData = action.payload
+            state.isLoggedIn = true;
+            state.isLoggingIn = false;
         },
         updateRegistrationForm(state, action: PayloadAction<InputState>) {
             const inputState: InputState = action.payload
@@ -143,11 +163,17 @@ export const registerUser = createAsyncThunk<UserData,User>('auth/register', asy
     return response.data as UserData
 })
 
-export const loginUser = createAsyncThunk<UserData,LoginInfo>('auth/login', async (loginInfo: LoginInfo, { rejectWithValue }) => {
+type LoginAction = {
+    loginInfo: LoginInfo,
+    successCallback: VoidFunction
+}
+
+export const loginUser = createAsyncThunk<UserData,LoginAction>('auth/login', async ({ loginInfo, successCallback }, { rejectWithValue }) => {
     const response: ApiResponse = await login(loginInfo)
     if (response.statusCode === 401) {
         return rejectWithValue(response)
     }
+    successCallback()
     return response.data as UserData
 })
 
@@ -155,6 +181,10 @@ export const {
     reset,
     signUp,
     signIn,
+    authorized,
+    logoutUser,
+    setPageLoading,
+    setFromLoginPage,
     updateRegistrationForm,
     updateLoginForm,
 } = authSlice.actions

@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, Fragment } from 'react';
+import { createContext, useContext, useState, Fragment, useMemo } from 'react';
 import Snackbar from '@mui/material/Snackbar';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
@@ -72,8 +72,13 @@ export const AlertProvider: React.FC<AlertProviderProps> = ({ children }) => {
         </Fragment>
     );
 
+    const value = useMemo(
+        () => ({ showAlert, closeAlert }),
+        []
+    )
+
     return (
-        <AlertContext.Provider value={{ showAlert, closeAlert }}>
+        <AlertContext.Provider value={value}>
             {children}
             <Snackbar
                 open={open}

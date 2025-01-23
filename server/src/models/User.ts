@@ -9,6 +9,7 @@ export type UserIdentifier = {
 export interface ILoginInfo {
     email: string
     password: string
+    sessionId?: string
 }
 export interface IUserInfo {
     firstName: string

@@ -5,41 +5,64 @@ import { RegistrationForm } from '../../features/auth/components/RegistrationFor
 import { appDispatch, useAppSelector } from '../../app/hooks';
 import { useNavigate } from 'react-router-dom'
 import { AlertType, useAlertContext } from '../../contexts/AlertContext';
-import { reset } from '../../features/auth/authSlice';
+import { authorized, reset, setFromLoginPage, setPageLoading, UserData } from '../../features/auth/authSlice';
 import { AppMessage } from '../../types/Error';
+import { homeRoute } from '../../app/pages';
+import { ApiResponse } from '../../types/Response';
+import { getUserData } from '../../api/services/Auth';
 
 interface AuthenticationProps { }
 
 export const Authentication: React.FC<AuthenticationProps> = () => {
-    const { isLoggedIn, error, authMethod } = useAppSelector((state) => state.auth);
+    const { isLoggedIn, error, authMethod, isPageLoading, fromLoginPage } = useAppSelector((state) => state.auth);
     const { showAlert, closeAlert } = useAlertContext();
     const navigate = useNavigate();
     const dispatch = appDispatch()
 
-    useEffect(() => {
-        dispatch(reset())
-    }, [])
+    const validateToken = async () => {
+        try {
+            const userData: ApiResponse = await getUserData();
+            if (!!userData) {
+                dispatch(authorized(userData.data as UserData))
+                if (fromLoginPage) {
+                    console.log('creating delay...')
+                    const delayNavigation = setTimeout(() => {
+                        closeAlert()
+                        navigate(homeRoute);
+                    }, 1000);
+                    return () => {
+                        clearTimeout(delayNavigation);
+                    };
+                } else {
+                    console.log('no delay')
+                    closeAlert()
+                    navigate(homeRoute);
+                }
+            }
+        } catch (error) {
+            console.error('Token validation failed', error)
+        }
+        dispatch(setPageLoading(false))
+        dispatch(setFromLoginPage(false))
+        return () => {}
+    };
 
     useEffect(() => {
+        if (!fromLoginPage) dispatch(setPageLoading(true))
+        console.log('isLoggedIn: ', isLoggedIn, 'authMethod: ', authMethod)
         if (isLoggedIn) {
-            showAlert('Authentication success', 'success')
             const delayNavigation = setTimeout(() => {
                 closeAlert()
-                navigate('/app');
+                navigate(homeRoute);
             }, 1000);
             return () => {
                 clearTimeout(delayNavigation);
             };
+        } else {
+            console.log('login page validateToken...')
+            validateToken();
         }
     }, [isLoggedIn])
-
-    useEffect(() => {
-        if (authMethod === 'LOGIN') {
-            navigate('/auth/login', { replace: true })
-        } else {
-            navigate('/auth/register', { replace: true });
-        }
-    }, [authMethod])
 
     useEffect(() => {
         if (!!error) {
@@ -57,7 +80,8 @@ export const Authentication: React.FC<AuthenticationProps> = () => {
             dispatch(reset())
         }
     }, [error])
-    return (
+
+    return isPageLoading ? <></> : (
         <Container >
             <Grid container padding={5} justifyContent='center'>
                 {authMethod === 'LOGIN' ? 

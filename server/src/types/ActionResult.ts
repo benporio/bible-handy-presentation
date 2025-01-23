@@ -10,6 +10,8 @@ export type ServiceResult = {
     status: 'success' | 'error'
     data?: any
     message?: string | ServiceMessage[]
+    accessToken?: string,
+    refreshToken?: string,
 }
 
 export type HttpResponseInfo = {

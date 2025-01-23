@@ -2,22 +2,49 @@ import { Grid } from '@mui/material';
 import React, { useEffect } from 'react';
 import { Navigation } from '../../components/Navigation/Navigation';
 import { Outlet, useNavigate } from 'react-router';
-import { PageComponent, Pages } from '../../app/pages';
-import { useAppSelector } from '../../app/hooks';
+import { loginRoute, PageComponent, Pages} from '../../app/pages';
+import { getUserData } from '../../api/services/Auth';
+import { useAppSelector, appDispatch } from '../../app/hooks';
+import { authorized, UserData, setPageLoading, setFromLoginPage, reset } from '../../features/auth/authSlice';
+import { ApiResponse } from '../../types/Response';
 
 interface StartingPageProps { }
 
 export const StartingPage: React.FC<StartingPageProps> = () => {
-    const auth = useAppSelector((state) => state.auth);
+    const { isLoggedIn, authMethod, isPageLoading, isLogout } = useAppSelector((state) => state.auth);
     const navigate = useNavigate();
-    useEffect(() => {
-        if (auth.isLoggedIn) {
-            navigate('/app/home');
-        } else {
-            navigate('/auth');
+    const dispatch = appDispatch()
+
+    const validateToken = async () => {
+        try {
+            const userData: ApiResponse = await getUserData();
+            if (!!userData) {
+                dispatch(authorized(userData.data as UserData))
+            }
+        } catch (error) {
+            console.error('Token validation failed', error)
         }
-    }, [auth])
-    return (
+        dispatch(setPageLoading(false))
+        dispatch(setFromLoginPage(false))
+        navigate(loginRoute);
+        return () => {}
+    };
+
+    useEffect(() => {
+        dispatch(setPageLoading(true))
+        console.log('isLoggedIn: ', isLoggedIn, 'authMethod: ', authMethod)
+        if (!isLoggedIn && !isLogout) {
+            console.log('home page validateToken...')
+            validateToken();
+        } else if (isLogout) {
+            dispatch(reset())
+            navigate(loginRoute);
+        } else {
+            dispatch(setPageLoading(false))
+        }
+    }, [isLoggedIn])
+
+    return isPageLoading ? <></> : (
         <Grid container direction={'column'}>
             <Grid item style={{
                 position: 'sticky',
@@ -26,7 +53,7 @@ export const StartingPage: React.FC<StartingPageProps> = () => {
                 backgroundColor: '#101418',
                 zIndex: 10,
             }} padding={2}>
-                <Navigation items={Pages.filter(item => item.label === 'App')[0].subPages as PageComponent[]} />
+                <Navigation items={Pages.filter(item => item.label === 'Bible Handy Presentation')[0].subPages as PageComponent[]} />
             </Grid>
             <Grid item padding={2}>
                 <Outlet />

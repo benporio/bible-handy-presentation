@@ -3,9 +3,10 @@ import React from 'react';
 import { AnonymousProfilePic, AppLogo } from '../../asset/asset';
 import { PageComponent } from '../../app/pages';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { reset } from '../../features/auth/authSlice';
+import { reset, logoutUser } from '../../features/auth/authSlice';
 import { appDispatch, useAppSelector } from '../../app/hooks';
 import { NavigationItem } from '../NavigationItem/NavigationItem';
+import { logout } from '../../api/services/Auth';
 
 interface NavigationProps { 
     items: PageComponent[]
@@ -18,6 +19,13 @@ export const Navigation: React.FC<NavigationProps> = ({
     const dispatch = appDispatch()
     const navigate = useNavigate();
     const location = useLocation();
+
+    const handleLogout = () => {
+        logout();
+        dispatch(reset())
+        dispatch(logoutUser())
+    }
+    
     return (
         <Grid container direction={'column'} rowSpacing={2}>
             <Grid item>
@@ -51,7 +59,7 @@ export const Navigation: React.FC<NavigationProps> = ({
                                 </Grid>
                             </Grid>
                             <Grid item paddingX={2}>
-                                <span onClick={() => dispatch(reset())} style={{ cursor: 'pointer' }}>Logout</span>
+                                <span onClick={handleLogout} style={{ cursor: 'pointer' }}>Logout</span>
                             </Grid>
                         </Grid>
                     </Grid>
