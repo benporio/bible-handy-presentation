@@ -1,12 +1,13 @@
-import { Grid } from '@mui/material';
+import { ButtonBase, Grid } from '@mui/material';
 import React from 'react';
 import { AnonymousProfilePic, AppLogo } from '../../asset/asset';
-import { PageComponent } from '../../app/pages';
+import { homeRoute, PageComponent } from '../../app/pages';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { reset, logoutUser } from '../../features/auth/authSlice';
 import { appDispatch, useAppSelector } from '../../app/hooks';
 import { NavigationItem } from '../NavigationItem/NavigationItem';
 import { logout } from '../../api/services/Auth';
+import { useAuthContext } from '../../contexts/AuthContext/AuthContext';
 
 interface NavigationProps { 
     items: PageComponent[]
@@ -19,17 +20,23 @@ export const Navigation: React.FC<NavigationProps> = ({
     const dispatch = appDispatch()
     const navigate = useNavigate();
     const location = useLocation();
+    const { clearTokenCheckInterval } = useAuthContext();
 
     const handleLogout = () => {
         logout();
         dispatch(reset())
         dispatch(logoutUser())
+        clearTokenCheckInterval()
+    }
+
+    const handleOnClickLogo = () => {
+        navigate(homeRoute);
     }
     
     return (
         <Grid container direction={'column'} rowSpacing={2}>
             <Grid item>
-                <AppLogo style={{ width: '100px', height: 'auto' }} />
+                <ButtonBase disableRipple onClick={handleOnClickLogo}><AppLogo style={{ width: '100px', height: 'auto' }} /></ButtonBase>
             </Grid>
             <Grid item>
                 <Grid container justifyContent={'space-between'} paddingX={2} alignItems={'center'}>

@@ -1,66 +1,66 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Container, Grid } from '@mui/material';
 import { LoginForm } from '../../features/auth/components/LoginForm/LoginForm';
 import { RegistrationForm } from '../../features/auth/components/RegistrationForm/RegistrationForm';
 import { appDispatch, useAppSelector } from '../../app/hooks';
 import { useNavigate } from 'react-router-dom'
 import { AlertType, useAlertContext } from '../../contexts/AlertContext';
-import { authorized, reset, setFromLoginPage, setPageLoading, UserData } from '../../features/auth/authSlice';
+import { authorized, reset, setFromLoginPage, UserData } from '../../features/auth/authSlice';
 import { AppMessage } from '../../types/Error';
 import { homeRoute } from '../../app/pages';
-import { ApiResponse } from '../../types/Response';
-import { getUserData } from '../../api/services/Auth';
+import { useAuthContext } from '../../contexts/AuthContext/AuthContext';
+import Logger from '../../utils/Logger';
 
 interface AuthenticationProps { }
 
 export const Authentication: React.FC<AuthenticationProps> = () => {
-    const { isLoggedIn, error, authMethod, isPageLoading, fromLoginPage } = useAppSelector((state) => state.auth);
+    Logger.debug('rendering Authentication...')
+    const { validateToken } = useAuthContext();
+    const { isLoggedIn, error, authMethod, fromLoginPage, currentRoute } = useAppSelector((state) => state.auth);
+    const [ isPageLoading, setPageLoading ] = useState(true);
     const { showAlert, closeAlert } = useAlertContext();
     const navigate = useNavigate();
     const dispatch = appDispatch()
 
-    const validateToken = async () => {
-        try {
-            const userData: ApiResponse = await getUserData();
-            if (!!userData) {
-                dispatch(authorized(userData.data as UserData))
-                if (fromLoginPage) {
-                    console.log('creating delay...')
-                    const delayNavigation = setTimeout(() => {
-                        closeAlert()
-                        navigate(homeRoute);
-                    }, 1000);
-                    return () => {
-                        clearTimeout(delayNavigation);
-                    };
-                } else {
-                    console.log('no delay')
-                    closeAlert()
-                    navigate(homeRoute);
-                }
-            }
-        } catch (error) {
-            console.error('Token validation failed', error)
-        }
-        dispatch(setPageLoading(false))
-        dispatch(setFromLoginPage(false))
-        return () => {}
-    };
-
-    useEffect(() => {
-        if (!fromLoginPage) dispatch(setPageLoading(true))
-        console.log('isLoggedIn: ', isLoggedIn, 'authMethod: ', authMethod)
-        if (isLoggedIn) {
+    const homePageRedirect = () => {
+        if (fromLoginPage) {
+            Logger.debug('creating delay...')
             const delayNavigation = setTimeout(() => {
                 closeAlert()
                 navigate(homeRoute);
-            }, 1000);
+            }, Number(process.env.REACT_APP_LOGIN_TO_HOME_DELAY) || 1000);
+            dispatch(setFromLoginPage(false))
             return () => {
                 clearTimeout(delayNavigation);
             };
         } else {
-            console.log('login page validateToken...')
-            validateToken();
+            if (!!currentRoute) {
+                Logger.debug('navigating to current route: ', currentRoute)
+                navigate(currentRoute);
+            } else {
+                navigate(homeRoute);
+            }
+        }
+    }
+
+    const authorizedRedirect = (userData: UserData): VoidFunction => {
+        dispatch(authorized(userData as UserData))
+        homePageRedirect()
+        return () => {}
+    }
+
+    const nonauthorizedRedirect = (): VoidFunction => {
+        setPageLoading(false)
+        dispatch(setFromLoginPage(false))
+        return () => {}
+    }
+
+    useEffect(() => {
+        Logger.debug('Authentication... isLoggedIn: ', isLoggedIn, 'authMethod: ', authMethod)
+        if (isLoggedIn) {
+            homePageRedirect()
+        } else {
+            validateToken<VoidFunction>(authorizedRedirect, nonauthorizedRedirect);
         }
     }, [isLoggedIn])
 

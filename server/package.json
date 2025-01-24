@@ -4,12 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npm run --prefix ../client/ build && npm run build && node dist/index.js",
+    "start": "npm run --prefix ../client/ build && npm run buildProd && node dist/index.js",
+    "buildProd": "npx tsc && webpack --mode production",
     "build": "npx tsc && webpack",
     "test": "jest --verbose --detectOpenHandles",
     "clientDev": "npm start --prefix ../client/",
-    "fullDev": "npm run build && concurrently \"npm run clientDev\" \"npx tsc --watch\" \"nodemon -q dist/index.js\"",
-    "dev": "npm run build && concurrently \"npx tsc --watch\" \"nodemon -q dist/index.js\""
+    "dev": "npm run build && concurrently \"npx tsc --watch\" \"nodemon -q dist/index.js\"",
+    "fullDev": "npm run build && concurrently \"npm run clientDev\" \"npx tsc --watch\" \"nodemon -q dist/index.js\""
   },
   "keywords": [],
   "author": "",

@@ -3,6 +3,7 @@ import { useAuthContext } from "./AuthContext";
 import { loginRoute } from "../../app/pages";
 import { appDispatch } from "../../app/hooks";
 import { reset } from "../../features/auth/authSlice";
+import { logout } from "../../api/services/Auth";
 
 interface ProtectedRouteProps {
     children?: React.ReactNode;
@@ -10,11 +11,10 @@ interface ProtectedRouteProps {
 
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }): any => {
     const dispatch = appDispatch()
-    const { auth } = useAuthContext();
-    console.log('ProtectedRoute... auth.isLoggedIn: ', auth.isLoggedIn)
-    if (!auth.isLoggedIn) {
+    const { auth, isIntervalActive, hasStoredToken } = useAuthContext();
+    if (!isIntervalActive() || auth.isLogout || !hasStoredToken()) {
+        logout();
         dispatch(reset())
-        console.log('NOT logged in auth: ', auth)
         return <Navigate to={loginRoute} replace />;
     }
     return children;

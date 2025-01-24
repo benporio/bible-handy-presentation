@@ -30,7 +30,6 @@ export const getUserData = async (): Promise<ApiResponse> => {
     const response: unknown = await apiClient.get(`/auth/access-token`);
     const apiResponse: ApiResponse = response as ApiResponse;
     const authResponse: AuthResponse = apiResponse.data as AuthResponse
-    console.log('authResponse: ', authResponse)
     if (!!authResponse.accessToken) { 
         localStorage.setItem(StringConstant.ACCESS_TOKEN_ALIAS, JSON.stringify(authResponse.accessToken)); 
     }

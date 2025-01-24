@@ -3,7 +3,7 @@ import StringConstant from '../constants/stringConstant';
 
 const apiClient = axios.create({
     baseURL: process.env.REACT_APP_API_URL,
-    timeout: 0,
+    timeout: Number(process.env.REACT_APP_AXIOS_TIMEOUT),
     withCredentials: true,
 });
 
@@ -12,7 +12,7 @@ const apiClient = axios.create({
 //         const resp = await apiClient.get('auth/access-token');
 //         return resp.data.accessToken;
 //     } catch (e) {
-//         console.log("Error",e);   
+//         Logger.debug("Error",e);   
 //     }
 // };
 
@@ -30,7 +30,6 @@ apiClient.interceptors.request.use(
 
 apiClient.interceptors.response.use(
     (response) => {
-        console.log('response', response)
         if (!!response?.data?.accessToken) {
             localStorage.setItem(StringConstant.ACCESS_TOKEN_ALIAS, response.data.accessToken);
         }
@@ -53,7 +52,7 @@ apiClient.interceptors.response.use(
     //         }
     //     }
     //     if (axios.isCancel(error)) {
-    //         window.console.log('Request canceled', error.message);
+    //         window.Logger.debug('Request canceled', error.message);
     //     }
     //     if (!!error?.response?.data) return Promise.reject(error?.response?.data);
     //     return Promise.reject(error);

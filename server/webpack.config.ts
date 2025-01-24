@@ -20,7 +20,7 @@ module.exports = {
         path: path2.resolve(__dirname, 'dist'),
         filename: 'index.js'
     },
-    ...( process.env.MODE === 'PROD' ? {
-        plugins:  new copyFiles({ patterns: [{ from: '../client/build', to: 'build'}]}),
-    } : {} ),
+    plugins: [
+        new copyFiles({ patterns: [{ from: path2.resolve(__dirname, '../client/build'), to: path2.resolve(__dirname, 'dist/build') }]})
+    ],
 };

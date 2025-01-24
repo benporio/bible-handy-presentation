@@ -1,4 +1,5 @@
 import winston from 'winston'
+import dotenv from 'dotenv';
 
 const levels = {
     error: 0,
@@ -8,8 +9,10 @@ const levels = {
     debug: 4,
 }
 
+dotenv.config();
+
 const level = () => {
-    return process.env.MODE !== 'PROD' ? 'debug' : 'warn'
+    return process.env.MODE !== 'PROD' ? 'debug' : 'info'
 }
 
 const colors = {

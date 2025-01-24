@@ -6,6 +6,7 @@ import { faCircleChevronRight, faSpinner } from '@fortawesome/free-solid-svg-ico
 import { Helmet } from 'react-helmet-async';
 import { FormInput, FormInputProps } from '../../../../components/FormInput/FormInput';
 import { useLoginForm } from './useLoginForm';
+import Logger from '../../../../utils/Logger';
 
 interface LoginFormProps { 
     
@@ -22,6 +23,7 @@ export const LoginForm: React.FC<LoginFormProps> = () => {
         handleSignUpSwitch,
         isLoggingIn,
     } = useLoginForm();
+    Logger.debug('rendering LoginForm...')
     return (
         <Grid item className='primary' style={{ height: '600px', width: '700px' }}>
             <Helmet>

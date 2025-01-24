@@ -1,10 +1,12 @@
 import { Container, Grid, TextField } from '@mui/material';
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
+import Logger from '../../utils/Logger';
 
 interface HomeProps { }
 
 export const Home: React.FC<HomeProps> = () => {
+    Logger.debug('rendering Home...')
     return (
         <Container style={{ width: '70%' }}>
             <Helmet>

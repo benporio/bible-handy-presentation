@@ -9,13 +9,20 @@ export type Route = 'bhp' | 'auth' | 'login' | 'register' | 'home' | 'contact' |
 export type RouteLabel = 'Bible Handy Presentation' | 'Authentication' | 'Login' | 'Register' | 'Home' | 'Contact' | 'About'
 export type RouteContext = 'auth' | 'startingPage' | 'bhp'
 
+export const loginRoute = '/auth/login';
+export const registerRoute = '/auth/register';
+export const homeRoute = '/bhp/home';
+export const contactRoute = '/bhp/contact';
+export const aboutRoute = '/bhp/about';
+
 export type PageComponent = {
     id: number,
     label: RouteLabel,
     route: Route,
     page: JSX.Element,
     context: RouteContext,
-    subPages?: PageComponent[]
+    subPages?: PageComponent[],
+    pathName?: string
 }
 
 const protectRoute = (children: React.ReactNode) => {
@@ -40,6 +47,7 @@ export const Pages: PageComponent[] = [
                 route: 'login',
                 page: <Authentication />,
                 context: 'auth',
+                pathName: loginRoute,
             },
             {
                 id: 0.2,
@@ -47,6 +55,7 @@ export const Pages: PageComponent[] = [
                 route: 'register',
                 page: <Authentication />,
                 context: 'auth',
+                pathName: registerRoute,
             },
         ]
     },
@@ -63,6 +72,7 @@ export const Pages: PageComponent[] = [
                 route: 'home',
                 page: protectRoute(<Home />),
                 context: 'startingPage',
+                pathName: homeRoute,
             },
             {
                 id: 1.2,
@@ -70,6 +80,7 @@ export const Pages: PageComponent[] = [
                 route: 'contact',
                 page: protectRoute(<Contact />),
                 context: 'startingPage',
+                pathName: contactRoute,
             },
             {
                 id: 1.3,
@@ -77,13 +88,8 @@ export const Pages: PageComponent[] = [
                 route: 'about',
                 page: protectRoute(<About />),
                 context: 'startingPage',
+                pathName: aboutRoute,
             },
         ]
     },
 ]
-
-export const loginRoute = '/auth/login';
-export const registerRoute = '/auth/register';
-export const homeRoute = '/bhp/home';
-export const contactRoute = '/bhp/contact';
-export const aboutRoute = '/bhp/about';

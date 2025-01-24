@@ -1,7 +1,6 @@
 import React from 'react';
 import '../asset/css/App.css';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import App from '../containers/App';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { PageComponent, Pages } from './pages';
 
 const renderRoute = (page: PageComponent): React.ReactElement | null => {
@@ -21,10 +20,10 @@ const AppRoute: React.FC = () => {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<App />} />
                 {Pages.map(page => {
                     return renderRoute(page);
                 })}
+                <Route path="*" element={<Navigate to="/auth/login" />} />
             </Routes>
         </BrowserRouter>
     );

@@ -68,6 +68,18 @@ app.use(cookieParser());
 
 app.use(morganMiddleware);
 
+if (process.env.MODE !== 'PROD') {
+    app.use(cors({
+        origin: 'http://localhost:3001',
+        credentials: true, // Allow credentials
+    }));
+}
+
+export const apiV1BaseRoute: string = '/api/v1'
+
+app.use(`${apiV1BaseRoute}${Endpoint.AUTH}`, auth);
+app.use(`${apiV1BaseRoute}${Endpoint.USER}`, user);
+
 if (process.env.MODE === 'PROD') {
     const CLIENT_BUILD_DIR: string = 'build';
     
@@ -102,19 +114,8 @@ if (process.env.MODE === 'PROD') {
     }));
 }
 
-
-
-app.get('/', (req: Request, res: Response) => {
-    res.status(200).send('BHP App is running');
-});
-
-export const apiV1BaseRoute: string = '/api/v1'
-
-app.use(`${apiV1BaseRoute}${Endpoint.AUTH}`, auth);
-app.use(`${apiV1BaseRoute}${Endpoint.USER}`, user);
-
 app.use(errorhandler({
-    debug: process.env.ENV !== 'prod',
+    debug: process.env.MODE !== 'PROD',
     log: true,
 }));
 

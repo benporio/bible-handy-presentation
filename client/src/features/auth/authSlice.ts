@@ -37,9 +37,9 @@ export type AuthState = {
     authMethod: 'LOGIN' | 'REGISTER'
     registrationFormInfo: FormInfoState
     loginFormInfo: FormInfoState
-    isPageLoading: boolean
     fromLoginPage: boolean
     isLogout: boolean
+    currentRoute: string
 }
 
 const initialRegistrationState: FormInfoState = {
@@ -73,9 +73,9 @@ const initialState: AuthState = {
     authMethod: 'LOGIN',
     registrationFormInfo: initialRegistrationState,
     loginFormInfo: initialLoginState,
-    isPageLoading: true,
     fromLoginPage: false,
     isLogout: false,
+    currentRoute: '',
 }
 
 const authSlice = createSlice({
@@ -91,14 +91,15 @@ const authSlice = createSlice({
         signIn(state) {
             state.authMethod = 'LOGIN'
         },
-        setPageLoading(state, action: PayloadAction<boolean>) {
-            state.isPageLoading = action.payload
+        setCurrentRoute(state, action: PayloadAction<string>) {
+            state.currentRoute = action.payload
         },
         setFromLoginPage(state, action: PayloadAction<boolean>) {
             state.fromLoginPage = action.payload
         },
         logoutUser(state) {
             state.isLogout = true
+            localStorage.clear()
         },
         authorized(state, action: PayloadAction<UserData>) {
             state.userData = action.payload
@@ -183,8 +184,8 @@ export const {
     signIn,
     authorized,
     logoutUser,
-    setPageLoading,
     setFromLoginPage,
+    setCurrentRoute,
     updateRegistrationForm,
     updateLoginForm,
 } = authSlice.actions

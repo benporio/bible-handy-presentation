@@ -6,8 +6,10 @@ export const store = configureStore({
     reducer: {
         auth,
     },
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
-    devTools: true
+    devTools: true,
+    ...(process.env.REACT_APP_MODE === 'PROD' ? {} : {
+        middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
+    })
 })
 
 export type RootState = ReturnType<typeof store.getState>
