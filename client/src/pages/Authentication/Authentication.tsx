@@ -5,7 +5,7 @@ import { RegistrationForm } from '../../features/auth/components/RegistrationFor
 import { appDispatch, useAppSelector } from '../../app/hooks';
 import { useNavigate } from 'react-router-dom'
 import { AlertType, useAlertContext } from '../../contexts/AlertContext';
-import { authorized, reset, setFromLoginPage, UserData } from '../../features/auth/authSlice';
+import { authorized, setFromLoginPage, UserData } from '../../features/auth/authSlice';
 import { AppMessage } from '../../types/Error';
 import { homeRoute } from '../../app/pages';
 import { useAuthContext } from '../../contexts/AuthContext/AuthContext';
@@ -93,7 +93,6 @@ export const Authentication: React.FC<AuthenticationProps> = () => {
                 alertInfo.message = messages.join(', ')
             }
             showAlert(alertInfo.message, alertInfo.type)
-            dispatch(reset())
         }
     }, [error])
 

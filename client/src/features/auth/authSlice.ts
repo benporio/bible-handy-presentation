@@ -138,6 +138,7 @@ const authSlice = createSlice({
             if (!!error) {
                 state.error = error
             }
+            state.isRegistering = false;
         })
         builder.addCase(loginUser.pending, (state) => {
             state.isLoggingIn = true;
@@ -152,16 +153,21 @@ const authSlice = createSlice({
             if (!!error) {
                 state.error = error
             }
+            state.isLoggingIn = false;
         })
     },
 })
 
 export const registerUser = createAsyncThunk<UserData,User>('auth/register', async (signUpUser: User, { rejectWithValue }) => {
-    const response: ApiResponse = await register(signUpUser)
-    if (response.statusCode === 400) {
-        return rejectWithValue(response)
+    try {
+        const response: ApiResponse = await register(signUpUser)
+        if (response.statusCode === 400) {
+            return rejectWithValue(response)
+        }
+        return response.data as UserData
+    } catch (error) {
+        return rejectWithValue(error)
     }
-    return response.data as UserData
 })
 
 type LoginAction = {
@@ -170,12 +176,16 @@ type LoginAction = {
 }
 
 export const loginUser = createAsyncThunk<UserData,LoginAction>('auth/login', async ({ loginInfo, successCallback }, { rejectWithValue }) => {
-    const response: ApiResponse = await login(loginInfo)
-    if (response.statusCode === 401) {
-        return rejectWithValue(response)
+    try {
+        const response: ApiResponse = await login(loginInfo)
+        if (response.statusCode === 401) {
+            return rejectWithValue(response)
+        }
+        successCallback()
+        return response.data as UserData
+    } catch (error) {
+        return rejectWithValue(error)
     }
-    successCallback()
-    return response.data as UserData
 })
 
 export const {

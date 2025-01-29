@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import StringConstant from '../constants/stringConstant';
 
 const apiClient = axios.create({
@@ -35,7 +35,10 @@ apiClient.interceptors.response.use(
         }
         return response.data
     },
-    (error) => {
+    (error: AxiosError) => {
+        if (!!error?.response?.data) {
+            return Promise.reject(error?.response?.data);
+        }
         return Promise.reject(error);
     }
     // async (error: AxiosError) => {
