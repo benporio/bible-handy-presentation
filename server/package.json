@@ -4,13 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npm run --prefix ../client/ build && npm run buildProd && node dist/index.js",
-    "buildProd": "npx tsc && webpack --mode production",
-    "build": "npx tsc && webpack",
+    "start": "npm run --prefix ../client/ build && npm run build:prod && node dist/index.js",
+    "build:prod": "npx tsc && webpack --mode production",
+    "build:dev": "npx tsc && webpack --mode development",
     "test": "jest --verbose --detectOpenHandles",
     "clientDev": "npm start --prefix ../client/",
-    "dev": "npm run build && concurrently \"npx tsc --watch\" \"nodemon -q dist/index.js\"",
-    "fullDev": "npm run build && concurrently \"npm run clientDev\" \"npx tsc --watch\" \"nodemon -q dist/index.js\""
+    "dev": "npm run build:dev && concurrently \"npx tsc --watch\" \"nodemon -q dist/index.js\"",
+    "fullDev": "npm run build:dev && concurrently \"npm run clientDev\" \"npx tsc --watch\" \"nodemon -q dist/index.js\""
   },
   "keywords": [],
   "author": "",
@@ -52,6 +52,7 @@
     "mongoose": "^8.2.2",
     "nodemon": "^3.0.3",
     "supertest": "^6.3.4",
+    "terser-webpack-plugin": "^5.3.11",
     "ts-jest": "^29.1.2",
     "ts-loader": "^9.5.1",
     "ts-node": "^10.9.2",
@@ -59,6 +60,7 @@
     "typescript": "^5.4.2",
     "webpack": "^5.90.1",
     "webpack-cli": "^5.1.4",
+    "webpack-merge": "^6.0.1",
     "webpack-node-externals": "^3.0.0"
   }
 }
