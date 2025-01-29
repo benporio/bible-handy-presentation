@@ -161,10 +161,10 @@ const authSlice = createSlice({
 export const registerUser = createAsyncThunk<UserData,User>('auth/register', async (signUpUser: User, { rejectWithValue }) => {
     try {
         const response: ApiResponse = await register(signUpUser)
-        if (response.statusCode === 400) {
-            return rejectWithValue(response)
+        if (response.statusCode === 200) {
+            return response.data as UserData
         }
-        return response.data as UserData
+        return rejectWithValue(response)
     } catch (error) {
         return rejectWithValue(error)
     }
@@ -178,11 +178,11 @@ type LoginAction = {
 export const loginUser = createAsyncThunk<UserData,LoginAction>('auth/login', async ({ loginInfo, successCallback }, { rejectWithValue }) => {
     try {
         const response: ApiResponse = await login(loginInfo)
-        if (response.statusCode === 401) {
-            return rejectWithValue(response)
+        if (response.statusCode === 200) {
+            successCallback()
+            return response.data as UserData
         }
-        successCallback()
-        return response.data as UserData
+        return rejectWithValue(response)
     } catch (error) {
         return rejectWithValue(error)
     }
