@@ -10,6 +10,7 @@ import { AppMessage } from '../../types/Error';
 import { homeRoute } from '../../app/pages';
 import { useAuthContext } from '../../contexts/AuthContext/AuthContext';
 import Logger from '../../utils/Logger';
+import StringConstant from '../../constants/stringConstant';
 
 interface AuthenticationProps { }
 
@@ -54,6 +55,21 @@ export const Authentication: React.FC<AuthenticationProps> = () => {
         dispatch(setFromLoginPage(false))
         return () => {}
     }
+
+    const onAuthenticationPageFocus = () => {
+        const alreadyLoggedInCallBack = (userData: UserData): VoidFunction => {
+            window.removeEventListener('focus', onAuthenticationPageFocus)
+            return authorizedRedirect(userData);
+        }
+        const doValidateToken = !!localStorage.getItem(StringConstant.ACCESS_TOKEN_ALIAS)
+        Logger.debug('doValidateToken: ', doValidateToken)
+        if (doValidateToken) validateToken<VoidFunction>(alreadyLoggedInCallBack, nonauthorizedRedirect);
+    }
+
+    useEffect(() => {
+        window.addEventListener('focus', onAuthenticationPageFocus)
+        return () => window.removeEventListener('focus', onAuthenticationPageFocus)
+    }, [])
 
     useEffect(() => {
         Logger.debug('Authentication... isLoggedIn: ', isLoggedIn, 'authMethod: ', authMethod)

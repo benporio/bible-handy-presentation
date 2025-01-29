@@ -22,8 +22,8 @@ export const Navigation: React.FC<NavigationProps> = ({
     const location = useLocation();
     const { clearTokenCheckInterval } = useAuthContext();
 
-    const handleLogout = () => {
-        logout();
+    const handleLogout = async () => {
+        await logout();
         dispatch(reset())
         dispatch(logoutUser())
         clearTokenCheckInterval()

@@ -21,7 +21,7 @@ export const useLoginForm = () => {
         setValid(isAllFieldValid)
     }, [ formState ])
     
-    const loggingInUser: User = formState.inputs.reduce((acc: any, { name, value }) => {
+    const loggingInUser: User = formState.inputs?.reduce((acc: any, { name, value }: { name: string, value: any }) => {
         return {
             ...acc,
             [name]: value

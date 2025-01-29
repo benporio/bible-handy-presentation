@@ -16,14 +16,14 @@ export const useRegistrationForm = () => {
         const isAllFieldValid: boolean = formState.inputs.every((input: any) => {
             return !!input?.value
         })
-        const passwordState = formState.inputs.filter(input => input.name === 'password')[0]
-        const confirmPasswordState = formState.inputs.filter(input => input.name === 'confirmPassword')[0]
+        const passwordState = formState.inputs.filter((input: any) => input.name === 'password')[0]
+        const confirmPasswordState = formState.inputs.filter((input: any) => input.name === 'confirmPassword')[0]
         const isConfirmedPassword: boolean = !!passwordState && !!confirmPasswordState
             && passwordState.value === confirmPasswordState.value
         setValid([isAllFieldValid, isConfirmedPassword].every(bool => bool))
     }, [ formState ])
     
-    const registeringUser: User = formState.inputs.reduce((acc: any, { name, value }) => {
+    const registeringUser: User = formState.inputs?.reduce((acc: any, { name, value }: { name: string, value: any }) => {
         return {
             ...acc,
             [name]: value
