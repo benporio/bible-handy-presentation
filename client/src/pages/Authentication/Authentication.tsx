@@ -17,7 +17,7 @@ interface AuthenticationProps { }
 export const Authentication: React.FC<AuthenticationProps> = () => {
     Logger.debug('rendering Authentication...')
     const { validateToken } = useAuthContext();
-    const { isLoggedIn, error, authMethod, fromLoginPage, currentRoute } = useAppSelector((state) => state.auth);
+    const { isLoggedIn, error, authMethod, fromLoginPage, currentRoute, userData } = useAppSelector((state) => state.auth);
     const [ isPageLoading, setPageLoading ] = useState(true);
     const { showAlert, closeAlert } = useAlertContext();
     const navigate = useNavigate();
@@ -93,8 +93,14 @@ export const Authentication: React.FC<AuthenticationProps> = () => {
                 alertInfo.message = messages.join(', ')
             }
             showAlert(alertInfo.message, alertInfo.type)
+        } else {
+            const hasLoggedIn = !!localStorage.getItem(StringConstant.ACCESS_TOKEN_ALIAS) && !!userData
+                && !!userData.userName && isLoggedIn && fromLoginPage;
+            if (hasLoggedIn) {
+                showAlert('Authentication success', 'success')
+            }
         }
-    }, [error])
+    }, [error, userData])
 
     return isPageLoading ? <></> : (
         <Container >

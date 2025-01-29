@@ -3,12 +3,10 @@ import { User, loginUser, updateLoginForm, signUp, InputState, setFromLoginPage 
 import { ReturnProps } from '../../../../hooks/useValidatingInput';
 import StringUtil from '../../../../utils/StringUtil';
 import { useEffect, useState } from 'react';
-import { useAlertContext } from '../../../../contexts/AlertContext';
 
 export const useLoginForm = () => {
     const { isLoggingIn } = useAppSelector((state) => state.auth);
     const dispatch = appDispatch()
-    const { showAlert } = useAlertContext();
 
     const { loginFormInfo: formState } = useAppSelector((state) => state.auth);
     const [ isValid, setValid ] = useState(false);
@@ -80,10 +78,7 @@ export const useLoginForm = () => {
     const handleLogin = () => {
         if (isValid) {
             dispatch(setFromLoginPage(true))
-            dispatch(loginUser({ 
-                loginInfo: loggingInUser as User, 
-                successCallback: () => showAlert('Authentication success', 'success') 
-            }));
+            dispatch(loginUser(loggingInUser as User));
         }
     }
 

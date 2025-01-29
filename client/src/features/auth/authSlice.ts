@@ -127,6 +127,7 @@ const authSlice = createSlice({
     extraReducers: (builder) => {
         builder.addCase(registerUser.pending, (state) => {
             state.isRegistering = true;
+            state.error = null
         })
         builder.addCase(registerUser.fulfilled, (state, { payload }) => {
             state.userData = payload
@@ -142,6 +143,7 @@ const authSlice = createSlice({
         })
         builder.addCase(loginUser.pending, (state) => {
             state.isLoggingIn = true;
+            state.error = null
         })
         builder.addCase(loginUser.fulfilled, (state, { payload }) => {
             state.userData = payload
@@ -170,16 +172,10 @@ export const registerUser = createAsyncThunk<UserData,User>('auth/register', asy
     }
 })
 
-type LoginAction = {
-    loginInfo: LoginInfo,
-    successCallback: VoidFunction
-}
-
-export const loginUser = createAsyncThunk<UserData,LoginAction>('auth/login', async ({ loginInfo, successCallback }, { rejectWithValue }) => {
+export const loginUser = createAsyncThunk<UserData,LoginInfo>('auth/login', async (loginInfo: LoginInfo, { rejectWithValue }) => {
     try {
         const response: ApiResponse = await login(loginInfo)
         if (response.statusCode === 200) {
-            successCallback()
             return response.data as UserData
         }
         return rejectWithValue(response)
