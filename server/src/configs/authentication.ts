@@ -2,10 +2,10 @@ import jwt, { Secret, JwtPayload, TokenExpiredError } from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 import crypto from 'crypto';
 import { RefreshTokenFactory } from '../models/RefreshToken';
-import HttpStatusCode from '../../constants/httpStatusCode';
+import HttpStatusCode from '../constants/httpStatusCode';
 import { ServiceResult } from '../types/ActionResult';
 import Logger from "../utils/Logger";
-import Endpoint from '../../constants/endpoint';
+import Endpoint from '../constants/endpoint';
 
 export const SECRET_KEY: Secret = process.env?.JWT_SECRET || crypto.randomBytes(64).toString('hex');
 

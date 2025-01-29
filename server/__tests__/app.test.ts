@@ -1,6 +1,6 @@
 import request from 'supertest';
 import app from '../src/configs/app';
-import HttpStatusCode from '../constants/httpStatusCode';
+import HttpStatusCode from '../src/constants/httpStatusCode';
 import mongoose from 'mongoose';
 
 afterAll(async () => {

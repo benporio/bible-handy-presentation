@@ -1,4 +1,4 @@
-import HttpStatusCode from "../../constants/httpStatusCode";
+import HttpStatusCode from "../constants/httpStatusCode";
 import { ServiceResult, HttpResponseData, HttpResponseInfo } from "../types/ActionResult";
 import Logger from "../utils/Logger";
 

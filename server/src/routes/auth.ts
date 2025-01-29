@@ -3,7 +3,7 @@ import AuthController from "../controllers/AuthController";
 import { HttpResponseData } from '../types/ActionResult'
 import { CustomRequest } from "../configs/authentication";
 import { authentication } from "../configs/authentication";
-import Endpoint from "../../constants/endpoint";
+import Endpoint from "../constants/endpoint";
 
 export const auth = Router();
 

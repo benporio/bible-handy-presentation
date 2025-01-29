@@ -1,6 +1,6 @@
 import request from 'supertest';
 import app, { apiV1BaseRoute } from '../../src/configs/app';
-import HttpStatusCode from '../../constants/httpStatusCode';
+import HttpStatusCode from '../../src/constants/httpStatusCode';
 import mongoose from 'mongoose';
 import seedUsers, { revert as revertSeedUsers } from '../../db/seeds/testUsers';
 import dotenv from 'dotenv';

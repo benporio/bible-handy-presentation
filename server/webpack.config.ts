@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import path2 from 'path';
+import path from 'path';
 import nodeExternals from 'webpack-node-externals';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
@@ -19,7 +19,7 @@ module.exports = {
         ]
     },
     output: {
-        path: path2.resolve(__dirname, 'dist'),
+        path: path.resolve(__dirname, 'dist'),
         filename: 'index.js'
     },
 
@@ -33,7 +33,7 @@ module.exports = {
             minimizer: [new TerserPlugin()]
         },
         plugins: [
-            new CopyWebpackPlugin({ patterns: [{ from: path2.resolve(__dirname, '../client/build'), to: path2.resolve(__dirname, 'dist/build') }] })
+            new CopyWebpackPlugin({ patterns: [{ from: path.resolve(__dirname, '../client/build'), to: path.resolve(__dirname, 'dist/build') }] })
         ]
     })
 };

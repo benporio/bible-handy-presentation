@@ -1,4 +1,4 @@
-import HttpStatusCode from "../../constants/httpStatusCode";
+import HttpStatusCode from "../constants/httpStatusCode";
 import { ILoginInfo, IUser } from "../models/User";
 import AuthService from "../services/AuthService";
 import { ServiceResult, HttpResponseData, HttpResponseInfo } from "../types/ActionResult";

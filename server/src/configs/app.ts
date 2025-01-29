@@ -14,7 +14,7 @@ import Keycloak, { KeycloakConfig } from 'keycloak-connect';
 import * as redis from 'redis';
 import RedisStore from 'connect-redis';
 import { v4 as uuidV4 } from 'uuid';
-import Endpoint from '../../constants/endpoint'
+import Endpoint from '../constants/endpoint'
 import cors from 'cors'
 
 dotenv.config();
