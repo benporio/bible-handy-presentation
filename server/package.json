@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npm install && npm --prefix ../client/ install && npm run --prefix ../client/ build && npm run build:prod && node dist/index.js",
+    "start": "node dist/index.js",
     "start-local": "npm run --prefix ../client/ buildLocal && npm run build:prod && node -r dotenv/config dist/index.js dotenv_config_path=./env/.env-prod",
+    "build": "npm install && npm --prefix ../client/ install && npm run --prefix ../client/ build && npx tsc && webpack --config webpack.config.ts --mode production",
     "build:prod": "npx tsc && webpack --config webpack.prod.config.ts --mode production",
     "build:dev": "npx tsc && webpack --config webpack.dev.config.ts --mode development",
     "test": "jest --verbose --detectOpenHandles",
