@@ -5,6 +5,7 @@ import Logger from "../utils/Logger";
 import PromiseUtil from '../utils/PromiseUtil'
 import bcrypt from 'bcrypt'
 import Authenticator, { whitelistedTokens } from '../configs/authentication'
+import { BhpUserFactory } from "../models/BhpUser";
 
 class AuthService {
 
@@ -17,12 +18,27 @@ class AuthService {
         return await PromiseUtil.createPromise<ServiceResult>((resolve, reject) => {
             newUser.save()
             .then((userRes) => {
-                resolve({
-                    ...result,
-                    status: 'success',
-                    data: UserFactory.prepUserData(userRes as IUser),
-                    message: 'User is registered sussessfully',
-                });
+                BhpUserFactory.createUser(userRes.id)
+                .then(() => {
+                    Logger.info(`BhpUser created for user ${userRes.id}`)
+                    resolve({
+                        ...result,
+                        status: 'success',
+                        data: UserFactory.prepUserData(userRes as IUser),
+                        message: 'User is registered sussessfully',
+                    });
+                }).catch((error) => {
+                    Logger.error(`BhpUser creation failed for user ${userRes.id}`, error)
+                    resolve({
+                        ...result,
+                        status: 'error',
+                        message: [{
+                            type: 'error',
+                            message: 'Cannot register user. Validation failure.',
+                            details: error
+                        }]
+                    });
+                })
             })
             .catch((error: any) => {
                 if (!!error.stack && error.stack.includes('ValidationError')) {

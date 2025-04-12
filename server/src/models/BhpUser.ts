@@ -103,6 +103,15 @@ export class BhpUserFactory {
         return null
     }
 
+    public static async createUser(userId : string): Promise<void> {
+        const bhpUsers = await BhpUser.find({ userId })
+        if (!bhpUsers || !bhpUsers.length) {
+            Logger.info(`Creating new bhpUser with id ${userId}`)
+            await BhpUser.create({ userId })
+        }
+        Logger.info(`BhpUser ${userId} already exists`)
+    }
+
     public static async loadUser(userId : string): Promise<IBhpUserInfo> {
         try {
             const bhpUsers = await BhpUser.find({ userId })
