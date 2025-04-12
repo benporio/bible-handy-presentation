@@ -4,7 +4,7 @@ import cluster from 'cluster';
 import os from 'os';
 import webSocket from './src/configs/webSocket'
 
-const PORT = process.env.SERVER_PORT;
+const PORT = process.env.PORT;
 
 Logger.debug(`Worker ${process.pid} started`);
     

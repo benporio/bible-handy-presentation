@@ -13,7 +13,7 @@ export const SearchDisplay: React.FC<SearchDisplayProps> = () => {
     const [ sessionContent, setSessionContent ] = useState<PassageContent | null>(null)
 
     useEffect(() => {
-        const ws = new WebSocket(process.env.REACT_APP_WS_URL || '');
+        const ws = new WebSocket(process.env.REACT_APP_WS_URL || process.env.RENDER_EXTERNAL_HOSTNAME || '');
         ws.onopen = () => {
             Logger.debug('WebSocketServer has been connected')
             ws.send(JSON.stringify({ sessionId: '123' }))
