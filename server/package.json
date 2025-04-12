@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npm run --prefix ../client/ build && npm run build:prod && node dist/index.js",
+    "start": "npm install && npm --prefix ../client/ install && npm run --prefix ../client/ build && npm run build:prod && node dist/index.js",
     "start-local": "npm run --prefix ../client/ buildLocal && npm run build:prod && node -r dotenv/config dist/index.js dotenv_config_path=./env/.env-prod",
     "build:prod": "npx tsc && webpack --config webpack.prod.config.ts --mode production",
     "build:dev": "npx tsc && webpack --config webpack.dev.config.ts --mode development",
