@@ -4,7 +4,7 @@ import nodeExternals from 'webpack-node-externals';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
 
-dotenv.config();
+dotenv.config({ path: path.resolve(__dirname, './env/.env-dev') });
 
 module.exports = {
     entry: './index.ts',

@@ -32,8 +32,11 @@ export const LoginForm: React.FC<LoginFormProps> = () => {
             <Grid container direction='column' justifyContent='flex-end' height='100%' margin={0} padding={2} >
                 <Grid item alignSelf='center' marginBottom='auto' marginTop='auto'>
                     <Grid container spacing={5} justifyContent='center' height='auto' alignItems='center' direction='column'>
-                        <Grid item>
+                        <Grid item sx={{ display: { xs: 'none', md: 'block' } }}>
                             <AppLogo style={{ width: '400px', height: 'auto' }} />
+                        </Grid>
+                        <Grid item sx={{ display: { xs: 'block', md: 'none' } }}>
+                            <AppLogo style={{ width: '200px', height: 'auto' }} />
                         </Grid>
                         <Grid item>
                             <Grid container direction='column'>

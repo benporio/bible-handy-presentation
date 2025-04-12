@@ -2,6 +2,7 @@ import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { ApiResponse } from '../../types/Response'
 import { ApiError } from '../../types/Error'
 import { login, register } from '../../api/services/Auth'
+import Endpoint from '../../constants/endpoint'
 
 export type LoginInfo = {
     email: string
@@ -85,6 +86,9 @@ const authSlice = createSlice({
         reset: (state) => {
             return initialState
         },
+        resetError: (state) => {
+            state.error = null
+        },
         signUp(state) {
             state.authMethod = 'REGISTER'
         },
@@ -160,7 +164,7 @@ const authSlice = createSlice({
     },
 })
 
-export const registerUser = createAsyncThunk<UserData,User>('auth/register', async (signUpUser: User, { rejectWithValue }) => {
+export const registerUser = createAsyncThunk<UserData,User>(Endpoint.AUTH_REGISTER, async (signUpUser: User, { rejectWithValue }) => {
     try {
         const response: ApiResponse = await register(signUpUser)
         if (response.statusCode === 200) {
@@ -172,7 +176,7 @@ export const registerUser = createAsyncThunk<UserData,User>('auth/register', asy
     }
 })
 
-export const loginUser = createAsyncThunk<UserData,LoginInfo>('auth/login', async (loginInfo: LoginInfo, { rejectWithValue }) => {
+export const loginUser = createAsyncThunk<UserData,LoginInfo>(Endpoint.AUTH_LOGIN, async (loginInfo: LoginInfo, { rejectWithValue }) => {
     try {
         const response: ApiResponse = await login(loginInfo)
         if (response.statusCode === 200) {
@@ -194,6 +198,7 @@ export const {
     setCurrentRoute,
     updateRegistrationForm,
     updateLoginForm,
+    resetError,
 } = authSlice.actions
 
 export default authSlice.reducer

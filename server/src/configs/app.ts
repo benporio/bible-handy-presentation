@@ -3,8 +3,9 @@ import bodyParser from 'body-parser';
 import path from 'path';
 import express, { Express, NextFunction, Request, Response } from 'express';
 import errorhandler from 'strong-error-handler';
-import { auth } from '../routes/auth';
-import { user } from '../routes/user';
+import auth from '../routes/auth';
+import user from '../routes/user';
+import bibleSearch from '../routes/bibleSearch';
 import mongoose from 'mongoose';
 import morganMiddleware from './morganMiddleware';
 import Logger from '../utils/Logger';
@@ -79,6 +80,7 @@ export const apiV1BaseRoute: string = '/api/v1'
 
 app.use(`${apiV1BaseRoute}${Endpoint.AUTH}`, auth);
 app.use(`${apiV1BaseRoute}${Endpoint.USER}`, user);
+app.use(`${apiV1BaseRoute}${Endpoint.BIBLE_SEARCH}`, bibleSearch);
 
 if (process.env.MODE === 'PROD') {
     const CLIENT_BUILD_DIR: string = 'build';
@@ -87,7 +89,7 @@ if (process.env.MODE === 'PROD') {
     // in the build folder, will just serve index.html. Client side routing is
     // going to make sure that the correct content will be loaded.
     app.use((req: Request, res: Response, next: NextFunction) => {
-        if (/(.ico|.js|.css|.jpg|.png|.map)$/i.test(req.path)) {
+        if (/(.ico|.js|.css|.jpg|.png|.map|.svg|.ttf)$/i.test(req.path)) {
             next();
         } else {
             res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');

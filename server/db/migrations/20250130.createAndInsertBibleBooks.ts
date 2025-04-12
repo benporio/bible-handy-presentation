@@ -32,6 +32,9 @@ const schema = {
                     bsonType: 'number',
                     description: 'must be a number and is required',
                 },
+                languages: {
+                    bsonType: 'object',
+                }
             }
         }
     }
@@ -40,6 +43,11 @@ const schema = {
 async function createCollectionWithSchema(client: MongoClient, dbName: string, collectionName: string, schema: any) {
     try {
         const db = client.db(dbName);
+        const collections = await db.listCollections({ name: collectionName }).toArray();
+        if (collections.length > 0) {
+            await db.collection(collectionName).drop();
+            Logger.info(`Dropped existing collection ${collectionName}`);
+        }
         await db.createCollection(collectionName, schema);
         await db.collection(collectionName).createIndex({ code: 1 }, { unique: true });
         Logger.info(`Collection ${collectionName} created with schema.`);

@@ -30,7 +30,7 @@ export const refreshTokenSchema: Schema<IRefreshToken, RefreshTokenModel> = new 
 
 export type HydratedRefreshTokenDoc = HydratedDocument<IRefreshToken>
 
-const RefreshToken = model<IRefreshToken, RefreshTokenModel>('RefreshToken', refreshTokenSchema);
+const RefreshToken = model<IRefreshToken, RefreshTokenModel>('RefreshToken', refreshTokenSchema, 'refreshTokens');
 
 type RefreshTokenRequiredProp = {
     userId: string

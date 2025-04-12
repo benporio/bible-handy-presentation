@@ -4,22 +4,22 @@ import { LoginForm } from '../../features/auth/components/LoginForm/LoginForm';
 import { RegistrationForm } from '../../features/auth/components/RegistrationForm/RegistrationForm';
 import { appDispatch, useAppSelector } from '../../app/hooks';
 import { useNavigate } from 'react-router-dom'
-import { AlertType, useAlertContext } from '../../contexts/AlertContext';
-import { authorized, setFromLoginPage, UserData } from '../../features/auth/authSlice';
-import { AppMessage } from '../../types/Error';
+import { useAlertContext } from '../../contexts/AlertContext';
+import { authorized, AuthState, resetError, setFromLoginPage, UserData } from '../../features/auth/authSlice';
 import { homeRoute } from '../../app/pages';
 import { useAuthContext } from '../../contexts/AuthContext/AuthContext';
 import Logger from '../../utils/Logger';
 import StringConstant from '../../constants/stringConstant';
+import { RootState } from '../../app/store';
 
 interface AuthenticationProps { }
 
 export const Authentication: React.FC<AuthenticationProps> = () => {
     Logger.debug('rendering Authentication...')
     const { validateToken } = useAuthContext();
-    const { isLoggedIn, error, authMethod, fromLoginPage, currentRoute, userData } = useAppSelector((state) => state.auth);
+    const { isLoggedIn, error, authMethod, fromLoginPage, currentRoute, userData } = useAppSelector<RootState, AuthState>((state) => state.auth);
     const [ isPageLoading, setPageLoading ] = useState(true);
-    const { showAlert, closeAlert } = useAlertContext();
+    const { showAlert, closeAlert, showAlertError } = useAlertContext();
     const navigate = useNavigate();
     const dispatch = appDispatch()
 
@@ -82,17 +82,8 @@ export const Authentication: React.FC<AuthenticationProps> = () => {
 
     useEffect(() => {
         if (!!error) {
-            const alertInfo: { message: string, type: AlertType } = {
-                message: 'Something went wrong',
-                type: 'error',
-            }
-            if (typeof error.message === 'string') {
-                alertInfo.message = error.message
-            } else if (!!error.message && !!error.message.length) {
-                const messages: string[] = (error.message as AppMessage[]).map(m => m.message)
-                alertInfo.message = messages.join(', ')
-            }
-            showAlert(alertInfo.message, alertInfo.type)
+            showAlertError(error)
+            dispatch(resetError())
         } else {
             const hasLoggedIn = !!localStorage.getItem(StringConstant.ACCESS_TOKEN_ALIAS) && !!userData
                 && !!userData.userName && isLoggedIn && fromLoginPage;

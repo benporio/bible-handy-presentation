@@ -2,15 +2,18 @@ import app from './src/configs/app';
 import Logger from './src/utils/Logger';
 import cluster from 'cluster';
 import os from 'os';
+import webSocket from './src/configs/webSocket'
 
 const PORT = process.env.PORT;
 
 Logger.debug(`Worker ${process.pid} started`);
     
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     Logger.info(`App listening on port ${PORT}`);
 });
 
+
+webSocket(server)
 // if (process.env.MODE === 'PROD' && cluster.isPrimary) {
 //     // Count the machine's CPUs
 //     const cpuCount = os.cpus().length;

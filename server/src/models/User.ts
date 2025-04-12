@@ -105,7 +105,7 @@ userSchema.pre<IUser>('findOneAndUpdate', function(next: CallbackWithoutResultAn
 export type HydratedUserDoc = HydratedDocument<IUser>
 
 
-const User = model<IUser, UserModel>('User', userSchema);
+const User = model<IUser, UserModel>('User', userSchema, 'users');
 
 export class UserFactory extends User {
     private constructor() {

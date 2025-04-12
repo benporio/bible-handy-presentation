@@ -1,14 +1,13 @@
 import { appDispatch, useAppSelector } from '../../../../app/hooks';
-import { User, loginUser, updateLoginForm, signUp, InputState, setFromLoginPage } from '../../authSlice';
+import { User, loginUser, updateLoginForm, signUp, InputState, setFromLoginPage, AuthState } from '../../authSlice';
 import { ReturnProps } from '../../../../hooks/useValidatingInput';
 import StringUtil from '../../../../utils/StringUtil';
 import { useEffect, useState } from 'react';
+import { RootState } from '../../../../app/store';
 
 export const useLoginForm = () => {
-    const { isLoggingIn } = useAppSelector((state) => state.auth);
+    const { isLoggingIn, loginFormInfo: formState } = useAppSelector<RootState, AuthState>((state) => state.auth);
     const dispatch = appDispatch()
-
-    const { loginFormInfo: formState } = useAppSelector((state) => state.auth);
     const [ isValid, setValid ] = useState(false);
 
     useEffect(() => {

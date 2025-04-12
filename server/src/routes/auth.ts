@@ -5,7 +5,7 @@ import { CustomRequest } from "../configs/authentication";
 import { authentication } from "../configs/authentication";
 import Endpoint from "../constants/endpoint";
 
-export const auth = Router();
+const auth = Router();
 
 auth.get(Endpoint.AUTH_VALIDATE, (req: Request, res: Response, next: NextFunction) => {
     AuthController.validate(req.query)
@@ -68,3 +68,5 @@ auth.post(Endpoint.AUTH_LOGOUT, authentication, (req, res) => {
         });
     })
 });
+
+export default auth;

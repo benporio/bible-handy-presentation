@@ -5,6 +5,7 @@ import { getUserData } from '../../api/services/Auth';
 import { ApiResponse } from '../../types/Response';
 import Logger from '../../utils/Logger';
 import StringConstant from '../../constants/stringConstant';
+import { RootState } from '../../app/store';
 
 export type AuthType = 'info' | 'error' | 'success'
 
@@ -31,7 +32,7 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-    const auth = useAppSelector((state) => state.auth);
+    const auth = useAppSelector<RootState, AuthState>((state) => state.auth);
     const intervalIdRef = useRef<NodeJS.Timeout | null>(null);
 
     const validateToken = useCallback((async function<T>(authorizedCallback: (userData: UserData) => T, defaultCallback: () => T): Promise<T> {

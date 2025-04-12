@@ -1,4 +1,4 @@
-import { HydratedUserDoc, ILoginInfo, IUser, IUserInfo, UserFactory, UserIdentifier } from "../models/User";
+import { HydratedUserDoc, ILoginInfo, IUser, UserFactory, UserIdentifier } from "../models/User";
 import { RefreshTokenFactory } from '../models/RefreshToken'
 import { ServiceMessage, ServiceResult } from "../types/ActionResult";
 import Logger from "../utils/Logger";
@@ -56,7 +56,7 @@ class AuthService {
         const result: ServiceResult = { status: 'error' }
         const { email, password } = loginInfo
         const user = await this.findUserByEmailPassword(email, password);
-        if (!!!user) {
+        if (!user) {
             return {
                 ...result,
                 status: 'error',

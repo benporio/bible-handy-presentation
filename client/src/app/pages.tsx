@@ -3,10 +3,11 @@ import { About } from "../pages/About/About";
 import { Authentication } from "../pages/Authentication/Authentication";
 import { Contact } from "../pages/Contact/Contact";
 import { Home } from "../pages/Home/Home";
+import { Remote } from "../pages/Remote/Remote";
 import { StartingPage } from "../pages/StartingPage/StartingPage";
 
-export type Route = 'bhp' | 'auth' | 'login' | 'register' | 'home' | 'contact' | 'about'
-export type RouteLabel = 'Bible Handy Presentation' | 'Authentication' | 'Login' | 'Register' | 'Home' | 'Contact' | 'About'
+export type Route = 'bhp' | 'auth' | 'login' | 'register' | 'home' | 'contact' | 'about' | 'remote'
+export type RouteLabel = 'Bible Handy Presentation' | 'Authentication' | 'Login' | 'Register' | 'Home' | 'Contact' | 'About' | 'Remote'
 export type RouteContext = 'auth' | 'startingPage' | 'bhp'
 
 export const loginRoute = '/auth/login';
@@ -91,5 +92,12 @@ export const Pages: PageComponent[] = [
                 pathName: aboutRoute,
             },
         ]
+    },
+    {
+        id: 2,
+        label: 'Remote',
+        route: 'remote',
+        page: <Remote />,
+        context: 'bhp',
     },
 ]

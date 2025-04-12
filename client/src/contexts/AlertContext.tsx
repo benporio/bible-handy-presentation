@@ -2,12 +2,18 @@ import { createContext, useContext, useState, Fragment, useMemo } from 'react';
 import Snackbar from '@mui/material/Snackbar';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
+import { AppMessage } from '../types/Error';
 
 export type AlertType = 'info' | 'error' | 'success'
+
+export type AlertErrorMessage = {
+    message: string | string[] | AppMessage[]
+}
 
 interface AlertContextInterface {
     showAlert: (message: string, type?: AlertType) => void
     closeAlert: () => void
+    showAlertError: (error: AlertErrorMessage) => void
 }
 
 const AlertContext = createContext<AlertContextInterface | undefined>(undefined);
@@ -33,6 +39,20 @@ export const AlertProvider: React.FC<AlertProviderProps> = ({ children }) => {
         setMessage(message)
         !!type && setType(type)
         setOpen(true)
+    }
+
+    const showAlertError = (error: AlertErrorMessage) => {
+        const alertInfo: { message: string, type: AlertType } = {
+            message: 'Something went wrong',
+            type: 'error',
+        }
+        if (typeof error.message === 'string') {
+            alertInfo.message = error.message
+        } else if (!!error.message && !!error.message.length) {
+            const messages: string[] = (error.message as AppMessage[]).map(m => m.message)
+            alertInfo.message = messages.join(', ')
+        }
+        showAlert(alertInfo.message, alertInfo.type)
     }
 
     const closeAlert = () => setOpen(false);
@@ -73,7 +93,7 @@ export const AlertProvider: React.FC<AlertProviderProps> = ({ children }) => {
     );
 
     const value = useMemo(
-        () => ({ showAlert, closeAlert }),
+        () => ({ showAlert, closeAlert, showAlertError }),
         []
     )
 

@@ -1,3 +1,4 @@
+import Endpoint from '../../constants/endpoint';
 import StringConstant from '../../constants/stringConstant';
 import { LoginInfo, User } from '../../features/auth/authSlice';
 import { ApiResponse, AuthResponse } from '../../types/Response';
@@ -5,7 +6,7 @@ import apiClient from '../apiClient';
 
 export const login = async (loginInfo: LoginInfo): Promise<ApiResponse> => {
     try {
-        const response: unknown = await apiClient.post(`/auth/login`, loginInfo);
+        const response: unknown = await apiClient.post(Endpoint.AUTH_LOGIN, loginInfo);
         const apiResponse: ApiResponse = response as ApiResponse;
         const authResponse: AuthResponse = apiResponse.data as AuthResponse
         if (!!authResponse.accessToken) { 
@@ -19,7 +20,7 @@ export const login = async (loginInfo: LoginInfo): Promise<ApiResponse> => {
 
 export const register = async (signUpUser: User): Promise<ApiResponse> => {
     try {
-        const response: unknown = await apiClient.post(`/auth/register`, signUpUser);
+        const response: unknown = await apiClient.post(Endpoint.AUTH_REGISTER, signUpUser);
         return response as ApiResponse;
     } catch (error: any) {
         return error as ApiResponse;
@@ -27,7 +28,7 @@ export const register = async (signUpUser: User): Promise<ApiResponse> => {
 };
 
 export const getUserData = async (): Promise<ApiResponse> => { 
-    const response: unknown = await apiClient.get(`/auth/access-token`);
+    const response: unknown = await apiClient.get(Endpoint.AUTH_ACCESS_TOKEN);
     const apiResponse: ApiResponse = response as ApiResponse;
     const authResponse: AuthResponse = apiResponse.data as AuthResponse
     if (!!authResponse.accessToken) { 
@@ -38,7 +39,7 @@ export const getUserData = async (): Promise<ApiResponse> => {
 
 export const logout = async (): Promise<ApiResponse> => {
     try {
-        const response: unknown = await apiClient.post(`/auth/logout`);
+        const response: unknown = await apiClient.post(Endpoint.AUTH_LOGOUT);
         localStorage.clear()
         return response as ApiResponse;
     } catch (error: any) {

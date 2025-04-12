@@ -105,6 +105,24 @@ class Authenticator {
             return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR_500).send({ message: err });
         }
     }
+
+    public async patchUserId(req: Request, res: Response, next: NextFunction) {
+        const requestToken = req.cookies.refreshToken;
+        if (!!!requestToken) return res.status(403).json({ message: "Refresh Token is required!" });
+        try {
+            const { userId, accessToken } = (req as CustomRequest);
+            if (!!!accessToken || accessToken === 'null') {
+                throw new Error('Unauthorized!');
+            }
+            if (blacklistedTokens.has(accessToken) || !whitelistedTokens.has(accessToken)) {
+                throw new Error('Unauthorized!');
+            }
+            (req.body).userId = userId;
+            next();
+        } catch (err) {
+            return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR_500).send({ message: err });
+        }
+    }
 }
 
 const authenticator = new Authenticator()
@@ -140,5 +158,7 @@ export const authentication = async (req: Request, res: Response, next: NextFunc
         } else res.status(401).send(`Please authenticate. Err: ${err}`);
     }
 };
+
+
 
 export default authenticator;

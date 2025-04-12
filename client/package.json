@@ -44,8 +44,8 @@
     "workbox-background-sync": "^6.6.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "env-cmd -f ./env/.env-dev react-scripts start",
+    "build": "env-cmd -f ./env/.env-prod react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

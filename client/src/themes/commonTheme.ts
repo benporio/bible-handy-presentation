@@ -90,6 +90,43 @@ export const commonTheme = createTheme({
                 }
             },
         },
+        MuiAutocomplete: {
+            styleOverrides: {
+                paper: {
+                    borderRadius: 11,
+                    backgroundColor: PALETTE.background.default,
+                    color: PALETTE.text.primary,
+                    variants: [
+                        {
+                            props: { color: 'primary' },
+                            style: {
+                                border: `1px solid ${PALETTE.primary.main}`,
+                            },
+                        },
+                        {
+                            props: { color: 'secondary' },
+                            style: {
+                                border: `1px solid ${PALETTE.secondary.main}`,
+                            },
+                        },
+                    ],
+                },
+                popupIndicator: {
+                    color: PALETTE.primary.main,
+                },
+                clearIndicator: {
+                    color: PALETTE.primary.main,
+                },
+                endAdornment: {
+                    color: PALETTE.primary.main,
+                },
+                option: {
+                    '&.MuiAutocomplete-option:hover': {
+                        background: PALETTE.primary.dark,
+                    },
+                }
+            },
+        },
         MuiButton: {
             styleOverrides: {
                 root: {
@@ -152,6 +189,40 @@ export const commonTheme = createTheme({
                     },
                 },
             ],
-        }
+        },
+        MuiCheckbox: {
+            variants: [
+                {
+                    props: { color: 'primary' },
+                    style: {
+                        color: PALETTE.primary.main,
+                    },
+                },
+                {
+                    props: { color: 'secondary' },
+                    style: {
+                        color: PALETTE.secondary.main,
+                    },
+                },
+            ],
+        },
+        MuiDrawer: {
+            styleOverrides: {
+                paper: {
+                    backgroundColor: PALETTE.background.default,
+                    color: PALETTE.text.primary,
+                },
+            },
+        },
+        MuiListSubheader: {
+            styleOverrides: {
+                root: {
+                    backgroundColor: PALETTE.background.default,
+                    color: PALETTE.text.primary,
+                    fontWeight: 'bolder',
+                    fontSize: '1.2rem',
+                },
+            },
+        },
     }
 });
