@@ -2,7 +2,7 @@ import axios, { AxiosError } from 'axios';
 import StringConstant from '../constants/stringConstant';
 
 const apiClient = axios.create({
-    baseURL: process.env.REACT_APP_API_URL || `${process.env.RENDER_EXTERNAL_HOSTNAME}/api/v1` || '',
+    baseURL: process.env.REACT_APP_API_URL || '',
     timeout: Number(process.env.REACT_APP_AXIOS_TIMEOUT),
     withCredentials: true,
 });
