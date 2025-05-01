@@ -11,6 +11,7 @@ interface RemoteProps { }
 export const Remote: React.FC<RemoteProps> = () => {
     const [ searchParams ] = useSearchParams();
     const sessionId = searchParams.get('session')
+    const doTransparentBackground = JSON.parse(searchParams.get('transparentBackground') || 'false')
     const [ passageContent, setPassageContent ] = useState<PassageContent | null>(null)
 
     useEffect(() => {
@@ -39,13 +40,18 @@ export const Remote: React.FC<RemoteProps> = () => {
             }
         }
         return () => closeWs(ws)
-    }, [sessionId])
+    }, [])
 
     return (
         <div style={{ margin: '0px 90px' }}>
             <Helmet>
                 <title>BHP | Remote</title>
-                <style>{`body { background-color: transparent !important; /*background: radial-gradient(circle, rgba(138,224,255,1) 0%, rgba(45,192,235,0.9951330874146533) 33%, rgba(4,80,155,1) 100%);*/ }`}</style>
+                <style>{`
+                    body {
+                        ${doTransparentBackground ? 'background-color: transparent !important;' :
+                            'background: radial-gradient(circle, rgba(138,224,255,1) 0%, rgba(45,192,235,0.9951330874146533) 33%, rgba(4,80,155,1) 100%);'}
+                    }
+                `}</style>
             </Helmet>
             <Grid container alignItems={'center'} justifyContent={'center'} style={{ minHeight: '900px', width: '100%', }}>
                 <Grid item alignItems={'center'} textAlign={'center'} justifyContent={'center'} style={{ height: '100%', width: '100%' }}>

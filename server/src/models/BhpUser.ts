@@ -108,8 +108,9 @@ export class BhpUserFactory {
         if (!bhpUsers || !bhpUsers.length) {
             Logger.info(`Creating new bhpUser with id ${userId}`)
             await BhpUser.create({ userId })
+        } else {
+            Logger.info(`BhpUser ${userId} already exists`)
         }
-        Logger.info(`BhpUser ${userId} already exists`)
     }
 
     public static async loadUser(userId : string): Promise<IBhpUserInfo> {
