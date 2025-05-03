@@ -31,7 +31,7 @@ export const SearchButton: React.FC<SearchButtonProps> = () => {
 
     return (
         <Grid item xs={12} style={{  width: '100%' }}>
-            <Grid container rowSpacing={2} columnSpacing={2} alignItems={'center'} justifyContent={'center'}>
+            <Grid container rowSpacing={1} columnSpacing={1} alignItems={'center'} justifyContent={'center'}>
                 <Grid item xs={'auto'} md={'auto'} lg={'auto'}>
                     <FormControlLabel control={<Checkbox value={!!bhpUser?.doSearchAndLive} onChange={handleCheckbox} color='primary' />} label="Live Search" />
                 </Grid>
