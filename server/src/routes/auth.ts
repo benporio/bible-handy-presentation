@@ -13,9 +13,24 @@ auth.get(Endpoint.AUTH_VALIDATE, (req: Request, res: Response, next: NextFunctio
     .catch(e => next(e));
 });
 
+const handlingAuthCookies = (actionResponse: HttpResponseData, res: Response) => {
+    if (actionResponse.status === 'success') {
+        if (!!actionResponse.refreshToken) {
+            res.cookie('refreshToken', actionResponse.refreshToken, {
+                httpOnly: true,
+                secure: process.env.MODE === 'PROD',
+            })
+        }
+    } else {
+        res.clearCookie('refreshToken')
+    }
+    if (!!actionResponse.refreshToken) delete actionResponse.refreshToken;
+    res.status(actionResponse.statusCode).json(actionResponse);
+}
+
 auth.post(Endpoint.AUTH_REGISTER, (req: Request, res: Response, next: NextFunction) => {
     AuthController.register(req.body)
-    .then((actionResponse: HttpResponseData) => res.status(actionResponse.statusCode).json(actionResponse))
+    .then((actionResponse: HttpResponseData) => handlingAuthCookies(actionResponse, res))
     .catch(e => next(e));
 });
 
@@ -24,20 +39,7 @@ auth.post(Endpoint.AUTH_LOGIN, (req: Request, res: Response, next: NextFunction)
     AuthController.login({
         ...req.body
     })
-    .then((actionResponse: HttpResponseData) => {
-        if (actionResponse.status === 'success') {
-            if (!!actionResponse.refreshToken) {
-                res.cookie('refreshToken', actionResponse.refreshToken, {
-                    httpOnly: true,
-                    // secure: process.env.NODE_ENV === 'production', // Set to true in production
-                })
-            }
-        } else {
-            res.clearCookie('refreshToken')
-        }
-        if (!!actionResponse.refreshToken) delete actionResponse.refreshToken;
-        res.status(actionResponse.statusCode).json(actionResponse);
-    })
+    .then((actionResponse: HttpResponseData) =>handlingAuthCookies(actionResponse, res))
     .catch(e => {
         next(e)
     });

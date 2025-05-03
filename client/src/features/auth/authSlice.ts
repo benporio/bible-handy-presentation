@@ -167,7 +167,7 @@ const authSlice = createSlice({
 export const registerUser = createAsyncThunk<UserData,User>(Endpoint.AUTH_REGISTER, async (signUpUser: User, { rejectWithValue }) => {
     try {
         const response: ApiResponse = await register(signUpUser)
-        if (response.statusCode === 200) {
+        if ([200, 201].includes(response.statusCode)) {
             return response.data as UserData
         }
         return rejectWithValue(response)

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useAppSelector, appDispatch } from "../../../../app/hooks";
+import { useAppSelector, appDispatch, resultDispatch } from "../../../../app/hooks";
 import { RootState } from "../../../../app/store";
 import { useAlertContext } from "../../../../contexts/AlertContext";
 import Logger from "../../../../utils/Logger";
@@ -47,7 +47,7 @@ export const useSearchControl = () => {
     const [ inputError, setInputError ] = useState<string | null>(null);
     const [ canBroadcast, setCanBroadcast ] = useState<boolean>(false);
     const dispatch = appDispatch()
-    const { showAlertError } = useAlertContext();
+    const { showAlertError, showAlert } = useAlertContext();
 
     useEffect(() => {
         if (!bhpUser) {
@@ -97,6 +97,10 @@ export const useSearchControl = () => {
 
     const handleVerseChange = (value: string | null) => {
         setInputError(null)
+        if (!value) {
+            dispatch(setVerses([]))
+            return
+        }
         if (value && isNumber(value)) {
             if (+value > 0) {
                 dispatch(setVerses([+value]))
@@ -132,22 +136,34 @@ export const useSearchControl = () => {
     type FetchPassageOptions = {
         broadcast?: boolean
         adhocVerses?: number[] | null
+        byPassageContent?: boolean
     }
 
-    const doFetchPassage = ({ broadcast = false, adhocVerses = verses }: FetchPassageOptions = {}) => {
+    const doFetchPassage = ({ broadcast = false, adhocVerses = verses, byPassageContent = false }: FetchPassageOptions = {}) => {
         if (inputError) {
             showAlertError({ message: inputError })
             setInputError(null)
             return
         }
-        Logger.debug(`${book?.name} ${chapter}:${adhocVerses?.join(',')}`);
         if (version && book && chapter && adhocVerses && adhocVerses.length > 0) {
+            Logger.debug(`${book?.name} ${chapter}:${adhocVerses?.join(',')}`);
             const passageSearch: PassageSearch = {
                 passage: {
                     book: book,
                     version: version,
                     chapter: chapter,
                     verses: adhocVerses
+                },
+                searchControl: {
+                    broadcast: broadcast
+                }
+            }
+            dispatch(fetchPassage(passageSearch))
+        } else if (byPassageContent && passageContent && adhocVerses && adhocVerses.length > 0) {
+            const passageSearch: PassageSearch = {
+                passage: {
+                    ...passageContent.passage as Passage,
+                    verses: adhocVerses,
                 },
                 searchControl: {
                     broadcast: broadcast
@@ -198,6 +214,8 @@ export const useSearchControl = () => {
             passageContent: passageContent,
         }
         dispatch(savePassagePreset(bhpPreset))
+        .then(res => resultDispatch(res, () => showAlert(`Preset '${bhpPreset.title}' was saved`, 'success')))
+        .catch(err => showAlertError({ message: `Preset not saved - ${err}` }))
     }
 
     const loadPassagePresetHistory = (passageContent: PassageContent) => {
@@ -215,7 +233,7 @@ export const useSearchControl = () => {
             if (verses.length > 0) {
                 const verse = verses[0] + step
                 if (verse > 0) {
-                    doFetchPassage({ broadcast: !!bhpUser?.doSearchAndLive, adhocVerses: [verse] })
+                    doFetchPassage({ broadcast: !!bhpUser?.doSearchAndLive, adhocVerses: [verse], byPassageContent: true })
                 }
             }
         }

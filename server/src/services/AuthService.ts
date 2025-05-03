@@ -18,27 +18,35 @@ class AuthService {
         return await PromiseUtil.createPromise<ServiceResult>((resolve, reject) => {
             newUser.save()
             .then((userRes) => {
-                BhpUserFactory.createUser(userRes.id)
-                .then(() => {
-                    Logger.info(`BhpUser created for user ${userRes.id}`)
-                    resolve({
-                        ...result,
-                        status: 'success',
-                        data: UserFactory.prepUserData(userRes as IUser),
-                        message: 'User is registered sussessfully',
-                    });
-                }).catch((error) => {
-                    Logger.error(`BhpUser creation failed for user ${userRes.id}`, error)
-                    resolve({
-                        ...result,
-                        status: 'error',
-                        message: [{
-                            type: 'error',
-                            message: 'Cannot register user. Validation failure.',
-                            details: error
-                        }]
-                    });
+                const userData = UserFactory.prepUserData(userRes);
+                const userId = userRes.id;
+                const refreshToken = RefreshTokenFactory.createRefreshToken({ userId: userId, sessionId: user.sessionId || '' })
+                Promise.all([
+                    RefreshTokenFactory.destroyRefreshToken(refreshToken.token), 
+                    RefreshTokenFactory.destroyRefreshTokens(userId)
+                ]).then(() => {
+                    Promise.all([
+                        refreshToken.save(),
+                        BhpUserFactory.createUser(userId),
+                    ]).then(([ refreshTokenRes ]) => {
+                        Logger.info(`BhpUser created for user ${userId}`)
+                        const newAccessToken = Authenticator.createAccessToken(userId)
+                        whitelistedTokens.add(newAccessToken)
+                        resolve({
+                            ...result,
+                            status: 'success',
+                            data: {
+                                ...userData,
+                                userId: userId
+                            },
+                            message: 'User is registered sussessfully',
+                            accessToken: newAccessToken,
+                            refreshToken: refreshTokenRes.token,
+                        });
+                    }).catch((error) => reject(error))
                 })
+                .catch((error: any) => reject(error));
+                
             })
             .catch((error: any) => {
                 if (!!error.stack && error.stack.includes('ValidationError')) {
