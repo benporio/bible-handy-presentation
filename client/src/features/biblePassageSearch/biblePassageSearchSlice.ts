@@ -53,7 +53,7 @@ export type BhpPreset = {
 }
 
 export type BhpHistory = {
-    logDate: Date
+    logDateStr: string
     passageContent: PassageContent
 }
 
@@ -168,7 +168,7 @@ const biblePassageSearchSlice = createSlice({
         })
         builder.addCase(fetchPassage.fulfilled, (state, { payload }) => {
             state.passageContent = payload
-            state.bhpUser?.bibleSearchHistory.unshift({ logDate: new Date(), passageContent: payload });
+            state.bhpUser?.bibleSearchHistory.unshift({ logDateStr: (new Date()).toLocaleString(), passageContent: payload });
             state.isSearchingPassage = false;
         })
         builder.addCase(fetchPassage.rejected, (state, { payload }) => {

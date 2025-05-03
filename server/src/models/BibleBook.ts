@@ -63,7 +63,10 @@ export class BibleBookFactory {
     public static async findAllBooks(): Promise<HydratedBibleBookDoc[]> {
         return await PromiseUtil.createPromise<HydratedBibleBookDoc[]>((resolve, reject) => {
             BibleBook.find({}, { _id: 0 })
-            .then((books) => resolve(books))
+            .then((books) => {
+                books?.sort((a, b) => a.order - b.order)
+                resolve(books)
+            })
             .catch(err => {
                 Logger.error(err)
                 reject([])

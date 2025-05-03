@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { faCaretLeft, faCaretRight, faClockRotateLeft, faCloudArrowUp, faFloppyDisk, faMagnifyingGlass, faMagnifyingGlassArrowRight, faNoteSticky, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { Grid, Button, Checkbox, FormControlLabel } from '@mui/material'
 import { useSearchControl } from './useSearchControl'
 import PresetDrawer from './PresetDrawer';
@@ -21,6 +21,8 @@ export const SearchButton: React.FC<SearchButtonProps> = () => {
         toggleSearchAndLive,
         isSavingPreset,
         bhpUser,
+        goToPreviousVerse,
+        goToNextVerse,
     } = useSearchControl();
 
     const handleCheckbox = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,46 +33,62 @@ export const SearchButton: React.FC<SearchButtonProps> = () => {
         <Grid item xs={12} style={{  width: '100%' }}>
             <Grid container rowSpacing={2} columnSpacing={2} alignItems={'center'} justifyContent={'center'}>
                 <Grid item xs={'auto'} md={'auto'} lg={'auto'}>
-                    <FormControlLabel control={<Checkbox value={!!bhpUser?.doSearchAndLive} onChange={handleCheckbox} color='primary' />} label="Search and Live" />
+                    <FormControlLabel control={<Checkbox value={!!bhpUser?.doSearchAndLive} onChange={handleCheckbox} color='primary' />} label="Live Search" />
                 </Grid>
                 { bhpUser?.doSearchAndLive ? 
                     <Grid item xs={'auto'} md={'auto'} lg={'auto'}>
-                        <Button onClick={() => doFetchPassage(true)} color='secondary' variant='contained' size='small' autoFocus={false}>
-                            <span className='b f4'>{isSearchingPassage ? <FontAwesomeIcon icon={faSpinner} spin />  : 'SEARCH'}</span>
+                        <Button onClick={() => doFetchPassage({ broadcast: true})} color='secondary' variant='text' size='small' autoFocus={false}>
+                            <span className='b f4'>{isSearchingPassage ? <FontAwesomeIcon icon={faSpinner} spin />  : <FontAwesomeIcon icon={faMagnifyingGlassArrowRight} size='xl' />}</span>
                         </Button>
                     </Grid>
                     :
                     <Grid item xs={'auto'} md={'auto'} lg={'auto'}>
-                        <Grid container rowSpacing={3} columnSpacing={2} alignItems={'center'} justifyContent={'center'}>
+                        <Grid container rowSpacing={3} columnSpacing={1} alignItems={'center'} justifyContent={'center'}>
                             <Grid item md={'auto'} lg={'auto'}>
-                                <Button onClick={() => doFetchPassage()} color='primary' variant='contained' sx={{ xs: {} }} size='small' autoFocus={false}>
-                                    <span className='b f4'>{isSearchingPassage ? <FontAwesomeIcon icon={faSpinner} spin />  : 'SEARCH'}</span>
+                                <Button onClick={() => doFetchPassage()} color='primary' variant='text' sx={{ xs: {} }} size='small' autoFocus={false}>
+                                    <span className='b f4'>{isSearchingPassage ? <FontAwesomeIcon icon={faSpinner} spin />  : <FontAwesomeIcon icon={faMagnifyingGlass} size='xl' />}</span>
                                 </Button>
                             </Grid>
                             <Grid item md={'auto'} lg={'auto'}>
-                                <Button onClick={doBroadcastPassage} { ...getLiveDisableProps() } color='secondary' variant='contained' size='small' autoFocus={false}>
-                                    <span className='b f4'>{isBroadcastingPassage ? <FontAwesomeIcon icon={faSpinner} spin />  : 'LIVE'}</span>
+                                <Button onClick={doBroadcastPassage} { ...getLiveDisableProps() } color='secondary' variant='text' size='small' autoFocus={false}>
+                                    <span className='b f4'>{isBroadcastingPassage ? <FontAwesomeIcon icon={faSpinner} spin />  : <FontAwesomeIcon icon={faCloudArrowUp} size='xl' />}</span>
                                 </Button>
                             </Grid>
                         </Grid>
                     </Grid>
                 }
                 <Grid item xs={'auto'} md={'auto'} lg={'auto'} sx={{ marginLeft: { xs: 'none', md: 'auto' } }}>
-                    <Grid container rowSpacing={3} columnSpacing={2} alignItems={'center'} justifyContent={'center'}>
+                    <Grid container rowSpacing={3} alignItems={'center'} justifyContent={'center'}>
+                        <Grid item md={'auto'} lg={'auto'}>
+                            <Button onClick={goToPreviousVerse} { ...getLiveDisableProps() } color='primary' variant='text' size='small' autoFocus={false}>
+                                <span className='b f4'><FontAwesomeIcon icon={faCaretLeft} size='xl' /></span>
+                            </Button>
+                            <PresetDrawer />
+                        </Grid>
+                        <Grid item md={'auto'} lg={'auto'}>
+                            <Button onClick={goToNextVerse} { ...getLiveDisableProps() }  color='primary' variant='text' size='small' autoFocus={false}>
+                                <span className='b f4'><FontAwesomeIcon icon={faCaretRight} size='xl' /></span>
+                            </Button>
+                            <HistoryDrawer />
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Grid item xs={'auto'} md={'auto'} lg={'auto'} sx={{ marginLeft: { xs: 'none', md: 'auto' } }}>
+                    <Grid container rowSpacing={3} columnSpacing={1} alignItems={'center'} justifyContent={'center'}>
                         <Grid item md={'auto'} lg={'auto'} marginLeft={'auto'}>
-                            <Button onClick={doSavePassagePreset} { ...getLiveDisableProps() } color='secondary' variant='outlined' size='small' autoFocus={false}>
-                                <span className='b f4'>{isSavingPreset ? <FontAwesomeIcon icon={faSpinner} spin />  : 'SAVE'}</span>
+                            <Button onClick={doSavePassagePreset} { ...getLiveDisableProps() } color='secondary' variant='text' size='small' autoFocus={false}>
+                                <span className='b f4'>{isSavingPreset ? <FontAwesomeIcon icon={faSpinner} spin />  : <FontAwesomeIcon icon={faFloppyDisk} size='xl' />}</span>
                             </Button>
                         </Grid>
                         <Grid item md={'auto'} lg={'auto'} marginLeft={'auto'}>
-                            <Button onClick={() => togglePresetDrawer(true)} color='primary' variant='outlined' size='small' autoFocus={false}>
-                                <span className='b f4'>PRESET</span>
+                            <Button onClick={() => togglePresetDrawer(true)} color='primary' variant='text' size='small' autoFocus={false}>
+                                <span className='b f4'><FontAwesomeIcon icon={faNoteSticky} size='xl' /></span>
                             </Button>
                             <PresetDrawer />
                         </Grid>
                         <Grid item md={'auto'} lg={'auto'} marginLeft={'auto'}>
-                            <Button onClick={() => toggleHistoryDrawer(true)}  color='primary' variant='outlined' size='small' autoFocus={false}>
-                                <span className='b f4'>HISTORY</span>
+                            <Button onClick={() => toggleHistoryDrawer(true)}  color='primary' variant='text' size='small' autoFocus={false}>
+                                <span className='b f4'><FontAwesomeIcon icon={faClockRotateLeft} size='xl' /></span>
                             </Button>
                             <HistoryDrawer />
                         </Grid>

@@ -28,12 +28,12 @@ export type BhpHistory = {
 
 export type BhpPresetReturn = {
     title: string
-    logDate: Date
+    logDateStr: string
     passageContent: PassageContent
 }
 
 export type BhpHistoryReturn = {
-    logDate: Date
+    logDateStr: string
     passageContent: PassageContent
 }
 
@@ -67,14 +67,14 @@ export class BhpUserFactory {
             if (!bhpUsers || !bhpUsers.length) {
                 Logger.info(`Creating new bhpUser with id ${userId}`)
                 await BhpUser.create({ userId, bibleSearchPresets: [{ title, logDate, passageContent }] })
-                return { title, logDate, passageContent };
+                return { title, logDateStr: logDate.toLocaleString(), passageContent };
             }
             await BhpUser.findOneAndUpdate(
                 { userId: userId },
                 { $addToSet: { bibleSearchPresets: { title, logDate, passageContent } } },
                 { new: true }
             )
-            return { title, logDate, passageContent };
+            return { title, logDateStr: logDate.toLocaleString(), passageContent };
         } catch (error) {
             Logger.error(error)
         }
@@ -89,14 +89,14 @@ export class BhpUserFactory {
             if (!bhpUsers || !bhpUsers.length) {
                 Logger.info(`Creating new bhpUser with id ${userId}`)
                 await BhpUser.create({ userId, bibleSearchHistory: [{ logDate, passageContent }] })
-                return { logDate, passageContent };
+                return { logDateStr: logDate.toLocaleString(), passageContent };
             }
             await BhpUser.findOneAndUpdate(
                 { userId: userId },
                 { $addToSet: { bibleSearchHistory: { logDate, passageContent } } },
                 { new: true }
             )
-            return { logDate, passageContent };
+            return { logDateStr: logDate.toLocaleString(), passageContent };
         } catch (error) {
             Logger.error(error)
         }

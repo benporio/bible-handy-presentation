@@ -24,6 +24,7 @@ import {
     setPassageContent,
     fetchBhpUserData,
     setDoSearchAndLive,
+    Passage,
 } from "../../biblePassageSearchSlice";
 
 export const useSearchControl = () => {
@@ -128,20 +129,25 @@ export const useSearchControl = () => {
         dispatch(setVerses(selectedVerses))
     }
 
-    const doFetchPassage = (broadcast: boolean = false) => {
+    type FetchPassageOptions = {
+        broadcast?: boolean
+        adhocVerses?: number[] | null
+    }
+
+    const doFetchPassage = ({ broadcast = false, adhocVerses = verses }: FetchPassageOptions = {}) => {
         if (inputError) {
             showAlertError({ message: inputError })
             setInputError(null)
             return
         }
-        Logger.debug(`${book?.name} ${chapter}:${verses?.join(',')}`);
-        if (version && book && chapter && verses && verses.length > 0) {
+        Logger.debug(`${book?.name} ${chapter}:${adhocVerses?.join(',')}`);
+        if (version && book && chapter && adhocVerses && adhocVerses.length > 0) {
             const passageSearch: PassageSearch = {
                 passage: {
                     book: book,
                     version: version,
                     chapter: chapter,
-                    verses: verses
+                    verses: adhocVerses
                 },
                 searchControl: {
                     broadcast: broadcast
@@ -170,7 +176,7 @@ export const useSearchControl = () => {
     const keyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
         const x = event.key;        
         if (x === 'Enter') {
-            doFetchPassage(!!bhpUser?.doSearchAndLive)
+            doFetchPassage({ broadcast: !!bhpUser?.doSearchAndLive })
         }
     }
 
@@ -203,6 +209,26 @@ export const useSearchControl = () => {
         dispatch(setDoSearchAndLive(value))
     }
 
+    const goToVerseFromCurrent = (step: number) => {
+        if (passageContent) {
+            const { verses } = passageContent.passage as Passage
+            if (verses.length > 0) {
+                const verse = verses[0] + step
+                if (verse > 0) {
+                    doFetchPassage({ broadcast: !!bhpUser?.doSearchAndLive, adhocVerses: [verse] })
+                }
+            }
+        }
+    }
+
+    const goToPreviousVerse = () => {
+        goToVerseFromCurrent(-1)
+    }
+
+    const goToNextVerse = () => {
+        goToVerseFromCurrent(1)
+    }
+
     return {
         books,
         versions,
@@ -231,5 +257,7 @@ export const useSearchControl = () => {
         loadPassagePresetHistory,
         toggleSearchAndLive,
         isSavingPreset,
+        goToPreviousVerse,
+        goToNextVerse,
     }
 }

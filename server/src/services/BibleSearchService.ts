@@ -157,11 +157,18 @@ class BibleSearchService {
         const response = await fetch(url);
         const body = await response.text();
         const passageMessage: PassageMessage | null = await this.parsePassageMessage(body, passage);
-        if (!!!passageMessage) {
+        if (!passageMessage) {
             return {
                 ...result,
                 status: 'error',
                 message: 'No passage content found'
+            };
+        }
+        if (passageMessage.verseMessages?.every(v => v.content === '' && v.parts?.length === 0)) {
+            return {
+                ...result,
+                status: 'error',
+                message: 'Passage does not exist'
             };
         }
         const { passageLabel, verseMessages } = passageMessage;
