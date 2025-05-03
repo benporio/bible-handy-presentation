@@ -5,6 +5,7 @@ import { useAppSelector } from '../../../app/hooks';
 import { RootState } from '../../../app/store';
 import { BilbleSearchFilterState, PassageContent } from '../biblePassageSearchSlice';
 import Logger from '../../../utils/Logger';
+import { clear } from 'console';
 
 interface SearchDisplayProps {}
 
@@ -12,11 +13,12 @@ export const SearchDisplay: React.FC<SearchDisplayProps> = () => {
     const { passageContent } = useAppSelector<RootState, BilbleSearchFilterState>((state) => state.biblePassageSearch);
     const [ sessionContent, setSessionContent ] = useState<PassageContent | null>(null)
 
-    useEffect(() => {
-        const ws = new WebSocket(process.env.REACT_APP_WS_URL || '');
+    const setupWs = (ws: WebSocket) => {
+        let retryWsInterval: NodeJS.Timer | null = null;
         ws.onopen = () => {
             Logger.debug('WebSocketServer has been connected')
             ws.send(JSON.stringify({ sessionId: '123' }))
+            if (retryWsInterval) clearInterval(retryWsInterval)
         };
         ws.onmessage = (event) => {
             try {
@@ -29,8 +31,20 @@ export const SearchDisplay: React.FC<SearchDisplayProps> = () => {
         };
         ws.onerror = async () => {
             Logger.debug('WebSocketServer has been closed')
-            closeWs(ws)
+            retryWsInterval = setInterval(() => {
+                Logger.debug('Reconnecting to WebSocketServer...')
+                ws.close()
+                ws = new WebSocket(process.env.REACT_APP_WS_URL || '');
+                setupWs(ws)
+            }, 2000);
+            if (retryWsInterval) clearInterval(retryWsInterval)
         }
+    }
+
+
+    useEffect(() => {
+        let ws = new WebSocket(process.env.REACT_APP_WS_URL || '');
+        setupWs(ws)
         const closeWs = (ws: WebSocket) => {
             if (ws.readyState === WebSocket.OPEN) {
                 Logger.debug('Closing webSocketClient...')

@@ -27,9 +27,9 @@ export const PassageDisplay: React.FC<PassageDisplayProps> = ({ content: passage
                         margin: '10px',
                         color: 'white',
                         fontSize: 'calc(1.8vw + 1.8vh + 1.2vmin)',
-                        textShadow: '1px 1px rgba(128, 128, 128, 0.3)',
+                        textShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)', // Added blur effect
                         fontWeight: 'bold',
-                        WebkitTextStroke: '1px black',
+                        WebkitTextStroke: '2px black',
                         ...messageTextProps
                     }}>
                     <div className='content'

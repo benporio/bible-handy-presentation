@@ -46,10 +46,43 @@ export const Remote: React.FC<RemoteProps> = () => {
         <div style={{ margin: '0px 90px' }}>
             <Helmet>
                 <title>BHP | Remote</title>
+                <link rel="preconnect" href="https://fonts.googleapis.com"></link>
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous"></link>
+                {/* <link href="https://fonts.googleapis.com/css2?family=Carter+One&display=swap" rel="stylesheet"></link> */}
+                {/* font-family: "Carter One", system-ui;
+                        font-weight: 400;
+                        font-style: normal; */}
+
+                {/* <link href="https://fonts.googleapis.com/css2?family=Calistoga&display=swap" rel="stylesheet"></link> */}
+                {/* font-family: "Calistoga", serif;
+                        font-weight: 400;
+                        font-style: normal; */}
+
+                <link href="https://fonts.googleapis.com/css2?family=Calistoga&family=Freeman&family=Palanquin+Dark:wght@400;500;600;700&display=swap" rel="stylesheet"></link>
+
+                {/* font-family: "Palanquin Dark", sans-serif;
+                        font-weight: 400;
+                        font-style: normal;
+
+                        font-family: "Palanquin Dark", sans-serif;
+                        font-weight: 500;
+                        font-style: normal;
+
+                        font-family: "Palanquin Dark", sans-serif;
+                        font-weight: 600;
+                        font-style: normal;
+
+                        font-family: "Palanquin Dark", sans-serif;
+                        font-weight: 700;
+                        font-style: normal; */}
+
                 <style>{`
                     body {
                         ${doTransparentBackground ? 'background-color: transparent !important;' :
                             'background: radial-gradient(circle, rgba(138,224,255,1) 0%, rgba(45,192,235,0.9951330874146533) 33%, rgba(4,80,155,1) 100%);'}
+                        font-family: "Palanquin Dark", sans-serif;
+                        font-weight: 700;
+                        font-style: normal;
                     }
                 `}</style>
             </Helmet>
@@ -57,7 +90,10 @@ export const Remote: React.FC<RemoteProps> = () => {
                 <Grid item alignItems={'center'} textAlign={'center'} justifyContent={'center'} style={{ height: '100%', width: '100%' }}>
                     <PassageDisplay content={passageContent} 
                         contentProps={{
-                            fontSize: '95%',
+                            fontSize: '98%',
+                        }}
+                        verseProps={{
+                            fontSize: '80%',
                         }}
                     />
                 </Grid>
