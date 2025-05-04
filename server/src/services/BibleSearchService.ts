@@ -136,7 +136,18 @@ class BibleSearchService {
                     } else {
                         resolve({
                             passageLabel: verseMessages.shift() as string,
-                            verseMessages: verseMessages as VerseMessage[]
+                            verseMessages: ((): VerseMessage[] => {
+                                const verseSet = new Set();
+                                return verseMessages.filter(verseMessage => {
+                                    const verse = verseMessage.verse;
+                                    if (verseSet.has(verse)) {
+                                        return false;
+                                    } else {
+                                        verseSet.add(verse);
+                                        return true;
+                                    }
+                                });
+                            })()
                         })
                     }
                 });

@@ -16,7 +16,7 @@ export const Home: React.FC<HomeProps> = () => {
             <Helmet>
                 <title>BHP | Home</title>
             </Helmet>
-            <Grid container rowGap={4} justifyContent={'center'} alignItems={'center'} direction={'row'}>
+            <Grid container rowGap={2} justifyContent={'center'} alignItems={'center'} direction={'row'}>
                 <SearchInput />
                 <SearchButton />
                 <SearchDisplay />

@@ -18,7 +18,7 @@ const handlingAuthCookies = (actionResponse: HttpResponseData, res: Response) =>
         if (!!actionResponse.refreshToken) {
             res.cookie('refreshToken', actionResponse.refreshToken, {
                 httpOnly: true,
-                secure: process.env.MODE === 'PROD',
+                secure: process.env.MODE === 'PROD' && process.env.DEPLOY !== 'LOCAL', // Set to true if using HTTPS in production
             })
         }
     } else {

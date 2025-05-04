@@ -79,6 +79,8 @@ export type BilbleSearchFilterState = {
     openHistoryDrawer: boolean
     isSavingPreset: boolean
     bhpUser: BhpUser | null
+    doTypeVerse: boolean
+    typePassageSuggestions: Passage[]
 }
 
 const initialState: BilbleSearchFilterState = {
@@ -97,6 +99,8 @@ const initialState: BilbleSearchFilterState = {
     openHistoryDrawer: false,
     isSavingPreset: false,
     bhpUser: null,
+    doTypeVerse: false,
+    typePassageSuggestions: [],
 }
 
 const biblePassageSearchSlice = createSlice({
@@ -138,6 +142,12 @@ const biblePassageSearchSlice = createSlice({
                 state.bhpUser.doSearchAndLive = action.payload
             }
         },
+        setDoTypeVerse(state, action: PayloadAction<boolean>) {
+            state.doTypeVerse = action.payload
+        },
+        setTypePassageSuggestions(state, action: PayloadAction<Passage[]>) {
+            state.typePassageSuggestions = action.payload
+        }
     },
     extraReducers: (builder) => {
         builder.addCase(fetchBibleBooks.fulfilled, (state, { payload }) => {
@@ -307,6 +317,8 @@ export const {
     setOpenHistoryDrawer,
     setPassageContent,
     setDoSearchAndLive,
+    setDoTypeVerse,
+    setTypePassageSuggestions
 } = biblePassageSearchSlice.actions
 
 export default biblePassageSearchSlice.reducer

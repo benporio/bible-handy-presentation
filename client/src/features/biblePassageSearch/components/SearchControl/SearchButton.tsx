@@ -23,6 +23,7 @@ export const SearchButton: React.FC<SearchButtonProps> = () => {
         bhpUser,
         goToPreviousVerse,
         goToNextVerse,
+        doTypeVerse,
     } = useSearchControl();
 
     const handleCheckbox = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,7 +38,7 @@ export const SearchButton: React.FC<SearchButtonProps> = () => {
                 </Grid>
                 { bhpUser?.doSearchAndLive ? 
                     <Grid item xs={'auto'} md={'auto'} lg={'auto'}>
-                        <Button onClick={() => doFetchPassage({ broadcast: true})} color='secondary' variant='text' size='small' autoFocus={false} title='Search and broadcast the result'>
+                        <Button onClick={() => doFetchPassage({ broadcast: true, byPassageContent: doTypeVerse })} color='secondary' variant='text' size='small' autoFocus={false} title='Search and broadcast the result'>
                             <span className='b f4'>{isSearchingPassage ? <FontAwesomeIcon icon={faSpinner} spin />  : <FontAwesomeIcon icon={faMagnifyingGlassArrowRight} size='xl' />}</span>
                         </Button>
                     </Grid>
@@ -45,7 +46,7 @@ export const SearchButton: React.FC<SearchButtonProps> = () => {
                     <Grid item xs={'auto'} md={'auto'} lg={'auto'}>
                         <Grid container rowSpacing={3} columnSpacing={1} alignItems={'center'} justifyContent={'center'}>
                             <Grid item md={'auto'} lg={'auto'}>
-                                <Button onClick={() => doFetchPassage()} color='primary' variant='text' sx={{ xs: {} }} size='small' autoFocus={false} title=''>
+                                <Button onClick={() => doFetchPassage({ byPassageContent: doTypeVerse })} color='primary' variant='text' sx={{ xs: {} }} size='small' autoFocus={false} title=''>
                                     <span className='b f4'>{isSearchingPassage ? <FontAwesomeIcon icon={faSpinner} spin />  : <FontAwesomeIcon icon={faMagnifyingGlass} size='xl' />}</span>
                                 </Button>
                             </Grid>
