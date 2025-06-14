@@ -277,7 +277,7 @@ export const useSearchControl = () => {
             return
         }
         const passageSuggestions: Passage[] = [];
-        const matches = typedPassage?.trim().match(/([1-3\s]+)?([A-Za-z\s]+)([0-9]+)?(\s+|:)?([0-9,-]+)?/)
+        const matches = typedPassage?.trim().match(/([1-3\s]+)?([A-Za-z\s-]+)([0-9]+)?(\s+|:)?([0-9,-]+)?/)
         if (matches?.length === 6) {
             const typedBookAffix: string = matches[1]?.trim() || ''
             const typedBook: string = matches[2]?.trim() || ''
@@ -288,13 +288,18 @@ export const useSearchControl = () => {
             Logger.debug('typedBook: ', typedBook)
             Logger.debug('typedChapter: ', typedChapter)
             Logger.debug('typedVerses: ', typedVerses)
+            const isMatchedBook = (bookName: string, typedBookAffix: string, typedBook: string): boolean => {
+                return !!bookName && ((!typedBookAffix || bookName.includes(typedBookAffix.toLowerCase())) && bookName.includes(typedBook.toLowerCase()));
+            }
             const suggestedBooks = books.filter((book) => {
-                const bookName = book.name.toLowerCase()
-                if ((!typedBookAffix || bookName.includes(typedBookAffix.toLowerCase())) && bookName.includes(typedBook.toLowerCase())) return true
+                if (!book) return false;
+                const bookName: string = book.name.toLowerCase() || '';
+                if (book.code && book.code.toLowerCase().includes(typedBook.toLowerCase())) return true
+                if (isMatchedBook(bookName, typedBookAffix, typedBook)) return true
                 if (version?.language && book.languages[version?.language]) {
                     const bookOtherName = book.languages[version?.language].toLowerCase()
                     Logger.debug('bookOtherName: ', bookOtherName)
-                    return (!typedBookAffix || bookOtherName.includes(typedBookAffix.toLowerCase())) && bookOtherName.includes(typedBook.toLowerCase())
+                    return isMatchedBook(bookOtherName, typedBookAffix, typedBook)
                 }
                 return false
             })

@@ -23,7 +23,7 @@ export default [
         "numberOfChapters": 27,
         "order": 2,
         "languages": {
-            "tagalog": "Levitico",
+            "tagalog": "Leviticus",
         },
     },
     {
@@ -32,7 +32,7 @@ export default [
         "numberOfChapters": 36,
         "order": 3,
         "languages": {
-            "tagalog": "Mga Bilang",
+            "tagalog": "Bilang",
         },
     },
     {
@@ -59,7 +59,7 @@ export default [
         "numberOfChapters": 21,
         "order": 6,
         "languages": {
-            "tagalog": "Mga Hukom",
+            "tagalog": "Hukom",
         },
     },
     {
@@ -95,7 +95,7 @@ export default [
         "numberOfChapters": 22,
         "order": 10,
         "languages": {
-            "tagalog": "1 Mga Hari",
+            "tagalog": "1 Hari",
         },
     },
     {
@@ -104,7 +104,7 @@ export default [
         "numberOfChapters": 25,
         "order": 11,
         "languages": {
-            "tagalog": "2 Mga Hari",
+            "tagalog": "2 Hari",
         },
     },
     {
@@ -113,7 +113,7 @@ export default [
         "numberOfChapters": 29,
         "order": 12,
         "languages": {
-            "tagalog": "1 Mga Cronica",
+            "tagalog": "1 Cronica",
         },
     },
     {
@@ -122,7 +122,7 @@ export default [
         "numberOfChapters": 36,
         "order": 13,
         "languages": {
-            "tagalog": "2 Mga Cronica",
+            "tagalog": "2 Cronica",
         },
     },
     {
@@ -149,7 +149,7 @@ export default [
         "numberOfChapters": 10,
         "order": 16,
         "languages": {
-            "tagalog": "Esther",
+            "tagalog": "Ester",
         },
     },
     {
@@ -167,7 +167,7 @@ export default [
         "numberOfChapters": 150,
         "order": 18,
         "languages": {
-            "tagalog": "Mga Awit",
+            "tagalog": "Awit",
         },
     },
     {
@@ -176,7 +176,7 @@ export default [
         "numberOfChapters": 31,
         "order": 19,
         "languages": {
-            "tagalog": "Mga Kawikaan",
+            "tagalog": "Kawikaan",
         },
     },
     {
@@ -194,7 +194,7 @@ export default [
         "numberOfChapters": 8,
         "order": 21,
         "languages": {
-            "tagalog": "Awit ni Solomon",
+            "tagalog": "Awit ng mga Awit",
         },
     },
     {
@@ -221,7 +221,7 @@ export default [
         "numberOfChapters": 5,
         "order": 24,
         "languages": {
-            "tagalog": "Mga Panaghoy",
+            "tagalog": "Panaghoy",
         },
     },
     {
@@ -293,7 +293,7 @@ export default [
         "numberOfChapters": 7,
         "order": 32,
         "languages": {
-            "tagalog": "Mikas",
+            "tagalog": "Micas",
         },
     },
     {
@@ -329,7 +329,7 @@ export default [
         "numberOfChapters": 2,
         "order": 36,
         "languages": {
-            "tagalog": "Hagay",
+            "tagalog": "Hageo",
         },
     },
     {
@@ -392,7 +392,7 @@ export default [
         "numberOfChapters": 28,
         "order": 43,
         "languages": {
-            "tagalog": "Mga Gawa",
+            "tagalog": "Gawa",
         },
     },
     {
@@ -401,7 +401,7 @@ export default [
         "numberOfChapters": 16,
         "order": 44,
         "languages": {
-            "tagalog": "Mga Taga-Roma",
+            "tagalog": "Roma",
         },
     },
     {
@@ -410,7 +410,7 @@ export default [
         "numberOfChapters": 16,
         "order": 45,
         "languages": {
-            "tagalog": "1 Mga Taga-Corinto",
+            "tagalog": "1 Corinto",
         },
     },
     {
@@ -419,7 +419,7 @@ export default [
         "numberOfChapters": 13,
         "order": 46,
         "languages": {
-            "tagalog": "2 Mga Taga-Corinto",
+            "tagalog": "2 Corinto",
         },
     },
     {
@@ -428,7 +428,7 @@ export default [
         "numberOfChapters": 6,
         "order": 47,
         "languages": {
-            "tagalog": "Mga Taga-Galacia",
+            "tagalog": "Galacia",
         },
     },
     {
@@ -437,7 +437,7 @@ export default [
         "numberOfChapters": 6,
         "order": 48,
         "languages": {
-            "tagalog": "Mga Taga-Efeso",
+            "tagalog": "Efeso",
         },
     },
     {
@@ -446,7 +446,7 @@ export default [
         "numberOfChapters": 4,
         "order": 49,
         "languages": {
-            "tagalog": "Mga Taga-Filipos",
+            "tagalog": "Filipos",
         },
     },
     {
@@ -455,7 +455,7 @@ export default [
         "numberOfChapters": 4,
         "order": 50,
         "languages": {
-            "tagalog": "Mga Taga-Colosas",
+            "tagalog": "Colosas",
         },
     },
     {
@@ -464,7 +464,7 @@ export default [
         "numberOfChapters": 5,
         "order": 51,
         "languages": {
-            "tagalog": "1 Mga Taga-Tesalonica",
+            "tagalog": "1 Tesalonica",
         },
     },
     {
@@ -473,7 +473,7 @@ export default [
         "numberOfChapters": 3,
         "order": 52,
         "languages": {
-            "tagalog": "2 Mga Taga-Tesalonica",
+            "tagalog": "2 Tesalonica",
         },
     },
     {
@@ -518,7 +518,7 @@ export default [
         "numberOfChapters": 13,
         "order": 57,
         "languages": {
-            "tagalog": "Mga Hebreo",
+            "tagalog": "Hebreo",
         },
     },
     {

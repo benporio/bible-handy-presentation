@@ -3,7 +3,7 @@ import { MongoClient } from 'mongodb';
 import Logger from '../../src/utils/Logger';
 import bibleBooks from '../seeds/bibleBooks';
 
-dotenv.config({ path: '../../.env' });
+dotenv.config({ path: '../../env/.env-dev' });
 
 const url = process.env.MONGODB_URL;
 const dbName = process.env.DB_NAME;
