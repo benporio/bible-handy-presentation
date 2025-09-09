@@ -17,6 +17,7 @@ export type Passage = {
     chapter: number
     verses: number[]
     description?: string
+    descriptionWithoutVersion?: string
 }
 
 export type VerseMessage = {

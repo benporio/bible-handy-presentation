@@ -21,6 +21,9 @@ export const SearchInput: React.FC<SearchInputProps> = () => {
         handleTypePassageChange,
         typePassageSuggestions,
         handleTypePassageSelection,
+        typePassageSelected,
+        chapter,
+        rawVersesInput,
     } = useSearchControl(); 
 
     return (
@@ -33,6 +36,7 @@ export const SearchInput: React.FC<SearchInputProps> = () => {
                         disablePortal
                         color='primary'
                         options={versions}
+                        value={version}
                         renderInput={(params) => {
                             return (
                                 <TextField
@@ -56,7 +60,7 @@ export const SearchInput: React.FC<SearchInputProps> = () => {
                 <FormControlLabel
                     onChange={(event) => handleTypeVerseChange((event.target as HTMLInputElement).checked)}
                     sx={{ verticalAlign: 'middle', margin: 'auto', marginTop: 2 }}
-                    control={<Switch color="primary" />}
+                    control={<Switch color="primary" checked={doTypeVerse} />}
                     label="Type passage"
                     value="doTypeVerse"
                     labelPlacement="top"
@@ -65,11 +69,13 @@ export const SearchInput: React.FC<SearchInputProps> = () => {
                 { doTypeVerse ? (
                     <Grid item xs={12} md={7} lg={7}>
                         <Autocomplete
-                            getOptionLabel={(option: Passage) => option.description || ''}
+                            getOptionLabel={(option: Passage) => option.descriptionWithoutVersion || (option.description || '')}
                             onChange={(event, value) => handleTypePassageSelection(value)}
                             disablePortal
                             color='primary'
                             options={typePassageSuggestions}
+                            value={typePassageSelected}
+                            isOptionEqualToValue={(option, value) => true}
                             filterOptions={(typePassageSuggestions, state) => typePassageSuggestions}
                             renderInput={(params) => {
                                 return (
@@ -101,6 +107,7 @@ export const SearchInput: React.FC<SearchInputProps> = () => {
                                 disablePortal
                                 color='primary'
                                 options={books}
+                                value={book}
                                 renderInput={(params) => {
                                     return (
                                         <TextField
@@ -130,6 +137,7 @@ export const SearchInput: React.FC<SearchInputProps> = () => {
                                 type='number'
                                 color='primary'
                                 fullWidth
+                                value={chapter || ''}
                                 inputProps={{
                                     style: { height: '100%' },
                                     min: 1,
@@ -141,6 +149,7 @@ export const SearchInput: React.FC<SearchInputProps> = () => {
                             <TextField
                                 onChange={(event) => handleVerseChange((event.target as HTMLInputElement).value)}
                                 onKeyDown={(event) => keyDown(event)}
+                                value={rawVersesInput || ''}
                                 disabled={!version}
                                 variant='outlined'
                                 label='Verse(s)'

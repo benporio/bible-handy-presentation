@@ -191,7 +191,8 @@ class BibleSearchService {
                 book,
                 chapter,
                 verses,
-                description: passageDescription
+                description: passageDescription,
+                descriptionWithoutVersion: passageLabel,
             },
             parts: verseMessages.map(x => x.parts).flat().filter((part): part is { id: string; className: string; innerText: string } => part !== undefined)
         }

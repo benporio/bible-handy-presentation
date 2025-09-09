@@ -32,6 +32,7 @@ export type Passage = {
     chapter: number
     verses: number[]
     description?: string
+    descriptionWithoutVersion?: string
 }
 
 export type PassageContent = {
@@ -71,6 +72,7 @@ export type BilbleSearchFilterState = {
     version: BibleVersion | null
     chapter: number | null
     verses: number[] | null
+    rawVersesInput: string | null
     passage: Passage | null
     passageContent: PassageContent | null
     isSearchingPassage: boolean
@@ -81,6 +83,7 @@ export type BilbleSearchFilterState = {
     bhpUser: BhpUser | null
     doTypeVerse: boolean
     typePassageSuggestions: Passage[]
+    typePassageSelected: Passage | null
 }
 
 const initialState: BilbleSearchFilterState = {
@@ -91,6 +94,7 @@ const initialState: BilbleSearchFilterState = {
     version: null,
     chapter: null,
     verses: [],
+    rawVersesInput: null,
     passage: null,
     passageContent: null,
     isSearchingPassage: false,
@@ -101,6 +105,7 @@ const initialState: BilbleSearchFilterState = {
     bhpUser: null,
     doTypeVerse: false,
     typePassageSuggestions: [],
+    typePassageSelected: null
 }
 
 const biblePassageSearchSlice = createSlice({
@@ -125,6 +130,9 @@ const biblePassageSearchSlice = createSlice({
         setVerses(state, action: PayloadAction<number[] | null>) {
             state.verses = action.payload
         },
+        setRawVersesInput(state, action: PayloadAction<string | null>) {
+            state.rawVersesInput = action.payload
+        },
         setPassage(state, action: PayloadAction<Passage>) {
             state.passage = action.payload
         },
@@ -147,6 +155,9 @@ const biblePassageSearchSlice = createSlice({
         },
         setTypePassageSuggestions(state, action: PayloadAction<Passage[]>) {
             state.typePassageSuggestions = action.payload
+        },
+        setTypePassageSelected(state, action: PayloadAction<Passage | null>) {
+            state.typePassageSelected = action.payload
         }
     },
     extraReducers: (builder) => {
@@ -318,7 +329,9 @@ export const {
     setPassageContent,
     setDoSearchAndLive,
     setDoTypeVerse,
-    setTypePassageSuggestions
+    setTypePassageSuggestions,
+    setTypePassageSelected,
+    setRawVersesInput,
 } = biblePassageSearchSlice.actions
 
 export default biblePassageSearchSlice.reducer

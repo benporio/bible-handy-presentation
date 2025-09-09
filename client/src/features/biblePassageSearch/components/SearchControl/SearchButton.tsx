@@ -24,6 +24,7 @@ export const SearchButton: React.FC<SearchButtonProps> = () => {
         goToPreviousVerse,
         goToNextVerse,
         doTypeVerse,
+        currentPassageDescription,
     } = useSearchControl();
 
     const handleCheckbox = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,7 +35,7 @@ export const SearchButton: React.FC<SearchButtonProps> = () => {
         <Grid item xs={12} style={{  width: '100%' }}>
             <Grid container rowSpacing={1} columnSpacing={1} alignItems={'center'} justifyContent={'center'}>
                 <Grid item xs={'auto'} md={'auto'} lg={'auto'}>
-                    <FormControlLabel control={<Checkbox value={!!bhpUser?.doSearchAndLive} onChange={handleCheckbox} color='primary' />} label="Live Search" title='Search and broadcast the result' />
+                    <FormControlLabel control={<Checkbox checked={!!bhpUser?.doSearchAndLive} onChange={handleCheckbox} color='primary' />} label="Live Search" title='Search and broadcast the result' />
                 </Grid>
                 { bhpUser?.doSearchAndLive ? 
                     <Grid item xs={'auto'} md={'auto'} lg={'auto'}>
@@ -64,13 +65,12 @@ export const SearchButton: React.FC<SearchButtonProps> = () => {
                             <Button onClick={goToPreviousVerse} { ...getLiveDisableProps() } color='primary' variant='text' size='small' autoFocus={false} title='Go to previous verse'>
                                 <span className='b f4'><FontAwesomeIcon icon={faCaretLeft} size='xl' /></span>
                             </Button>
-                            <PresetDrawer />
                         </Grid>
+                        <Grid item md={'auto'} lg={'auto'}><span className='b f5'>{currentPassageDescription}</span></Grid>
                         <Grid item md={'auto'} lg={'auto'}>
                             <Button onClick={goToNextVerse} { ...getLiveDisableProps() }  color='primary' variant='text' size='small' autoFocus={false} title='Go to next verse'>
                                 <span className='b f4'><FontAwesomeIcon icon={faCaretRight} size='xl' /></span>
                             </Button>
-                            <HistoryDrawer />
                         </Grid>
                     </Grid>
                 </Grid>

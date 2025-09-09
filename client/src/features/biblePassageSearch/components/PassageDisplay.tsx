@@ -65,7 +65,7 @@ export const PassageDisplay: React.FC<PassageDisplayProps> = ({ content: passage
                             return <span key={part.id}>{part.innerText.search('.') > 0 ? part.innerText : part.innerText.concat(' ')}</span>;
                         })}
                     </div>
-                    {hidePassage || 
+                    {hidePassage ? <></> : 
                         <div className='verse' 
                             style={{
                                 fontSize: '60%',

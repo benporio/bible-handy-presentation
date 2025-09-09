@@ -5,7 +5,6 @@ import { useAppSelector } from '../../../app/hooks';
 import { RootState } from '../../../app/store';
 import { BilbleSearchFilterState, PassageContent } from '../biblePassageSearchSlice';
 import Logger from '../../../utils/Logger';
-import { clear } from 'console';
 
 interface SearchDisplayProps {}
 
@@ -22,6 +21,8 @@ export const SearchDisplay: React.FC<SearchDisplayProps> = () => {
         };
         ws.onmessage = (event) => {
             try {
+                Logger.debug('event: ', event)
+                if (!event?.data || event.data?.size === 0) return;
                 const eventData = JSON.parse(event.data);
                 Logger.debug('ws client received: ', eventData)
                 setSessionContent(eventData);

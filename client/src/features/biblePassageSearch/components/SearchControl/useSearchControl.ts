@@ -27,6 +27,8 @@ import {
     Passage,
     setDoTypeVerse,
     setTypePassageSuggestions,
+    setTypePassageSelected,
+    setRawVersesInput,
 } from "../../biblePassageSearchSlice";
 
 export const useSearchControl = () => {
@@ -47,6 +49,8 @@ export const useSearchControl = () => {
         isSavingPreset,
         doTypeVerse,
         typePassageSuggestions,
+        typePassageSelected,
+        rawVersesInput,
     } = useAppSelector<RootState, BilbleSearchFilterState>((state) => state.biblePassageSearch);
     const [ inputError, setInputError ] = useState<string | null>(null);
     const [ canBroadcast, setCanBroadcast ] = useState<boolean>(false);
@@ -143,6 +147,7 @@ export const useSearchControl = () => {
         if (selectedVerses.length) { 
             dispatch(setVerses(selectedVerses))
         }
+        dispatch(setRawVersesInput(value))
     }
 
     type FetchPassageOptions = {
@@ -241,6 +246,7 @@ export const useSearchControl = () => {
     const loadPassagePresetHistory = (passageContent: PassageContent) => {
         dispatch(setPassageContent(passageContent))
         if (bhpUser?.doSearchAndLive) dispatch(broadcastPassage(passageContent))
+        updatePassageSearchInputs(passageContent.passage as Passage);
     }
 
     const toggleSearchAndLive = (value: boolean) => {
@@ -254,8 +260,51 @@ export const useSearchControl = () => {
                 const verse = verses[0] + step
                 if (verse > 0) {
                     doFetchPassage({ broadcast: !!bhpUser?.doSearchAndLive, adhocVerses: [verse], byPassageContent: true })
+                    dispatch(setVerses([verse]))
+                    dispatch(setRawVersesInput(verse.toString()))
+                    let updatedPassage: Passage = { ...passageContent.passage as Passage, verses: [verse] }
+                    updatedPassage = { ...updatedPassage, descriptionWithoutVersion: parsePasssageDescription(updatedPassage) }
+                    dispatch(setTypePassageSelected(updatedPassage))
+                    dispatch(setTypePassageSuggestions([passageContent.passage as Passage, updatedPassage]))
                 }
             }
+        }
+    }
+
+    const parsePasssageDescription = (passage: Passage): string => {
+        const { book, chapter, verses } = passage
+        if (verses.length === 1) {
+            return `${book.name} ${chapter}:${verses[0]}`
+        } else {
+            let labelBuff = `${book.name} ${chapter}:`;
+            let verseBuff = null;
+            let hasRange = false;
+            let verseCount = 0;
+            let verseLength = verses.length;
+            for (const verse of verses) {
+                verseCount++;
+                if (verseBuff === null) {
+                    labelBuff += verse;
+                } else {
+                    if (verseBuff + 1 === verse) {
+                        if (!hasRange) {
+                            labelBuff += '-'
+                            hasRange = true;
+                        }
+                        if (verseCount === verseLength) {
+                            labelBuff += verse;
+                        }
+                    } else {
+                        if (hasRange) {
+                            labelBuff += verseBuff;
+                            hasRange = false;
+                        }
+                        labelBuff += `,${verse}`;
+                    }
+                }
+                verseBuff = verse;
+            }
+            return labelBuff;
         }
     }
 
@@ -333,8 +382,21 @@ export const useSearchControl = () => {
             const { book, chapter, verses } = passage
             doFetchPassage({ broadcast: !!bhpUser?.doSearchAndLive, adhocBook: book, adhocChapter: chapter, adhocVerses: verses })
         }
+        updatePassageSearchInputs(passage);
     }
 
+    const updatePassageSearchInputs = (passage: Passage | null) => {
+        if (passage) {
+            const updatedPassage = { ...passage, descriptionWithoutVersion: parsePasssageDescription(passage) }
+            dispatch(setTypePassageSelected(updatedPassage));
+            dispatch(setTypePassageSuggestions([ ...typePassageSuggestions, updatedPassage]));
+            const { book, chapter, verses } = passage
+            dispatch(setBook(book));
+            dispatch(setChapter(chapter));
+            dispatch(setVerses(verses));
+            dispatch(setRawVersesInput(verses[0]?.toString() || ''));
+        }
+    }
 
     return {
         books,
@@ -371,5 +433,9 @@ export const useSearchControl = () => {
         handleTypePassageChange,
         typePassageSuggestions,
         handleTypePassageSelection,
+        typePassageSelected,
+        chapter,
+        rawVersesInput,
+        currentPassageDescription: passageContent?.passage?.description || '',
     }
 }
