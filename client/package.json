@@ -49,6 +49,7 @@
     "start": "env-cmd -f ./env/.env-dev react-scripts start",
     "build": "react-scripts build",
     "buildLocal": "env-cmd -f ./env/.env-prod react-scripts build",
+    "build:ec2": "env-cmd -f ./env/.env-prod-ec2 react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

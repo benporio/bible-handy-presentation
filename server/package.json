@@ -6,7 +6,9 @@
   "scripts": {
     "start": "node dist/index.js",
     "start-local": "npm run --prefix ../client/ buildLocal && npm run build:prod && node -r dotenv/config dist/index.js dotenv_config_path=./env/.env-prod",
+    "build:ec2": "npm run --prefix ../client/ build:ec2 && npm run build:prod-ec2",
     "build": "npm install && npm --prefix ../client/ install && npm run --prefix ../client/ build && npx tsc && webpack --config webpack.config.ts --mode production",
+    "build:prod-ec2": "npx tsc && webpack --config webpack.prod-ec2.config.ts --mode production",
     "build:prod": "npx tsc && webpack --config webpack.prod.config.ts --mode production",
     "build:dev": "npx tsc && webpack --config webpack.dev.config.ts --mode development",
     "test": "jest --verbose --detectOpenHandles",
